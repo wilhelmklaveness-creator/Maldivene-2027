@@ -1332,7 +1332,14 @@ function bindProfiles(){
 
 
 /* ================= FAMILIECHAT OG SYNK (Firebase) ================= */
-const FIREBASE_CONFIG = null; // fylles inn med familiens Firebase-oppsett
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCL6mKIvHHnt7M2TNCzCkD8FnNSzumn09A",
+  authDomain: "jawakara-familie.firebaseapp.com",
+  projectId: "jawakara-familie",
+  storageBucket: "jawakara-familie.firebasestorage.app",
+  messagingSenderId: "891481801765",
+  appId: "1:891481801765:web:c51fb16af7243f61342bcc"
+};
 const FB_VER = "10.12.2";
 const lsGet=k=>{try{return localStorage.getItem(LS_KEY+"-"+k);}catch(e){return null;}};
 const lsSet=(k,v)=>{try{localStorage.setItem(LS_KEY+"-"+k,v);}catch(e){}};
