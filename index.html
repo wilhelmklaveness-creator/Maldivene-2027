@@ -444,7 +444,7 @@ const LEARN = [
   {em:"🗺️",t:"Geografi",s:"Øyer, atoller og havnivå",body:`
     <p>Maldivene er en kjede av rundt 1 190 koralløyer i Indiahavet, sørvest for India og Sri Lanka. Øyene ligger i 26 naturlige <b>atoller</b>, ringformede rev rundt en lagune.</p>
     <p>Jawakara ligger i <b>Lhaviyani-atollen</b>, ca. 130 km nord for Malé. Resorten består av to øyer, <b>Mabin</b> (ca. 1 400 × 300 m) og <b>Dheru</b> (ca. 450 × 150 m), bundet sammen av en 650 meter lang bru over husrevet.</p>
-    <p>Landet ligger i snitt bare 1,5 meter over havet. Derfor er havstigning en av de største truslene mot Maldivene.</p>`},
+    <p>Landet ligger i snitt bare 1,5 meter over havet. Derfor er havstigning en av de største truslene mot Maldivene. Prøv simulatoren under fanen Havstigning.</p>`},
   {em:"🪸",t:"Korallrevet",s:"Hvordan et rev fungerer",body:`
     <p>Et korallrev er bygget av millioner av små dyr, <b>polypper</b>, som lager kalkskjelett. Inne i polyppene bor alger som lager mat fra sollys og gir korallene farger.</p>
     <p>Når havet blir for varmt, kaster korallene ut algene og blir hvite. Det kalles <b>bleking</b>. Maldivene har hatt store blekinger i 1998, 2016 og 2024, men mange rev kommer seg igjen.</p>
@@ -897,8 +897,8 @@ function openEventSheet(pref){
 /* ---------- MORO ---------- */
 VIEWS.moro = () => {
   const s = sub.moro;
-  const seg = `<div class="seg" role="tablist">${[["utfordringer","Oppgaver"],["merker","Merker"],["quiz","Quiz"],["laer","Lær"]].map(([k,l])=>`<button role="tab" type="button" data-seg="${k}" aria-selected="${s===k}">${l}</button>`).join("")}</div>`;
-  return seg + (s==="merker"?badgesView(): s==="quiz"?quizView(): s==="laer"?learnView(): challengesView());
+  const seg = `<div class="seg" role="tablist">${[["utfordringer","Oppgaver"],["merker","Merker"],["quiz","Quiz"],["laer","Lær"],["hav","Havstigning"]].map(([k,l])=>`<button role="tab" type="button" data-seg="${k}" aria-selected="${s===k}">${l}</button>`).join("")}</div>`;
+  return seg + (s==="merker"?badgesView(): s==="quiz"?quizView(): s==="laer"?learnView(): s==="hav"?slrView(): challengesView());
 };
 AFTER.moro = () => {
   document.querySelectorAll("[data-seg]").forEach(b=>b.addEventListener("click",()=>setSub("moro",b.dataset.seg)));
@@ -915,6 +915,8 @@ AFTER.moro = () => {
     if(on){ const nb=after.length?BADGES.find(x=>x.id===after[0]):null; toast(nb?`Nytt merke: ${nb.ic} ${nb.n}!`:`+${c.p} poeng til ${prof(pid).name.split(" ")[0]}`); }
   }));
   bindQuiz();
+  if(sub.moro==="hav") bindSlr();
+  const sel=document.querySelector('[data-seg][aria-selected="true"]'); sel&&sel.scrollIntoView({inline:"center",block:"nearest"});
 };
 function whoPicker(){
   const cur = chWho||S.me||"p1";
@@ -966,6 +968,121 @@ function bindQuiz(){
 }
 function learnView(){
   return `<div class="learn">${LEARN.map(l=>`<details class="lc"><summary><span class="em">${l.em}</span><span>${l.t}<span class="s2">${l.s}</span></span></summary><div class="body">${l.body}</div></details>`).join("")}</div>`;
+}
+
+
+/* ---------- HAVSTIGNING ---------- */
+/* Global havstigning i meter (median) relativt til 1995–2014, fra IPCC AR6 WG1 (SPM og kap. 9).
+   Mellom støttepunktene er tallene interpolert lineært. */
+const SLR = {
+  lav:   {n:"Lave utslipp (SSP1-2.6)",  pts:[[2020,0.05],[2030,0.09],[2050,0.19],[2100,0.44],[2150,0.68]], hi2100:0.62},
+  mid:   {n:"Middels utslipp (SSP2-4.5)",pts:[[2020,0.05],[2030,0.09],[2050,0.20],[2100,0.56],[2150,0.92]], hi2100:0.76},
+  hoy:   {n:"Høye utslipp (SSP5-8.5)",  pts:[[2020,0.05],[2030,0.10],[2050,0.23],[2100,0.77],[2150,1.32]], hi2100:1.01},
+  verst: {n:"Verste tilfelle (lite sannsynlig)",pts:[[2020,0.05],[2030,0.10],[2050,0.30],[2100,1.90],[2150,4.80]], hi2100:null}
+};
+const SLR_EXTRA = {mid:[0,"Vanlig vannstand"], flo:[0.5,"Springflo (+0,5 m)"], storm:[1.2,"Springflo og store bølger (+1,2 m)"]};
+/* Omtrentlige høyder over middelvann. Jawakara er et anslag for en typisk resortøy, ikke målt. */
+const SLR_PLACES = [
+  {n:"Typisk lokal øy",h:1.0,lat:3.1,lon:73.62,note:"Rundt 80 % av landarealet ligger under 1 meter."},
+  {n:"Jawakara (Mabin)",h:1.3,lat:5.42,lon:73.50,note:"Anslag. Høyden på øya er ikke målt i noen kilde vi har.",me:true},
+  {n:"Malé",h:1.3,lat:4.175,lon:73.51,note:"Hovedstaden, delvis beskyttet av en sjømur bygget etter 1987."},
+  {n:"Velana flyplass",h:2.0,lat:4.19,lon:73.53,note:"Rullebanen ligger rundt 2 meter over havet."},
+  {n:"Hulhumalé",h:2.0,lat:4.215,lon:73.545,note:"Kunstig øy, bygget opp til rundt 2 meter for å tåle havstigning."},
+  {n:"Villingili, Addu (høyeste punkt)",h:2.4,lat:-0.68,lon:73.19,note:"Landets høyeste naturlige punkt, rundt 2,4 meter."}
+];
+const ATOLLS = [["Haa Alif",6.95,72.95,.32,.2],["Haa Dhaalu",6.6,73.05,.25,.16],["Shaviyani",6.3,73.25,.22,.16],["Noonu",5.85,73.35,.24,.18],["Raa",5.6,72.95,.25,.18],["Lhaviyani",5.35,73.5,.18,.14],["Baa",5.15,73.0,.22,.17],["Kaafu",4.35,73.5,.3,.14],["Alif Alif",4.05,72.9,.2,.13],["Alif Dhaal",3.6,72.85,.17,.12],["Vaavu",3.5,73.5,.16,.12],["Faafu",3.2,72.95,.16,.12],["Meemu",2.95,73.52,.2,.12],["Dhaalu",2.85,72.95,.15,.12],["Thaa",2.35,73.1,.2,.17],["Laamu",1.9,73.4,.18,.15],["Gaafu Alif",0.6,73.3,.3,.2],["Gaafu Dhaalu",0.25,73.18,.24,.18],["Gnaviyani",-0.3,73.43,.04,.04],["Addu",-0.63,73.15,.1,.07]];
+let slr = {year:2050, sc:"mid", ex:"flo", playing:null};
+function slrAt(sc,year){ const p=SLR[sc].pts; if(year<=p[0][0]) return p[0][1]; for(let i=1;i<p.length;i++){ if(year<=p[i][0]){ const [x0,y0]=p[i-1],[x1,y1]=p[i]; return y0+(y1-y0)*(year-x0)/(x1-x0);} } return p[p.length-1][1]; }
+function slrYearFor(sc,h,extra){ for(let y=2020;y<=2150;y++) if(slrAt(sc,y)+extra>=h) return y; return null; }
+function slrView(){
+  return `<section class="card">
+    <div class="card-h"><h2>Havstigning på Maldivene</h2><span class="pill warn">Simulering</span></div>
+    <p>Dra i årstallet og se hvor høyt havet kan stå. Steder blir røde når vannet når opp til bakken der, ved den vannstanden du velger.</p>
+    <div class="stack" style="margin-top:12px">
+      <label class="f">Årstall: <span id="slrYearL" class="num" style="font-family:var(--font-d);font-size:1.4rem;color:var(--sea)">${slr.year}</span><input type="range" id="slrYear" min="2020" max="2150" step="1" value="${slr.year}" style="width:100%"></label>
+      <div class="row"><button type="button" class="btn sm" id="slrPlay">▶ Spill av</button><span class="small muted">fra i dag til 2150</span></div>
+      <div><div class="eyebrow" style="margin-bottom:6px">Utslippsscenario (IPCC)</div><div class="chips" role="group">${Object.entries(SLR).map(([k,v])=>`<button type="button" class="chip" data-slrsc="${k}" aria-pressed="${k===slr.sc}">${v.n}</button>`).join("")}</div></div>
+      <div><div class="eyebrow" style="margin-bottom:6px">Vannstand</div><div class="chips" role="group">${Object.entries(SLR_EXTRA).map(([k,v])=>`<button type="button" class="chip" data-slrex="${k}" aria-pressed="${k===slr.ex}">${v[1]}</button>`).join("")}</div></div>
+    </div>
+    <div class="stat" id="slrStats" style="margin-top:12px"></div>
+  </section>
+  <section class="card"><div class="card-h"><h3>Kart over atollene</h3><span class="small muted">Forenklet, ikke målestokk</span></div>
+    <div class="chartbox" id="slrMap"></div></section>
+  <section class="card"><div class="card-h"><h3>Tverrsnitt av Mabin</h3><span class="small muted">Antatt profil</span></div>
+    <div class="chartbox" id="slrProfile"></div>
+    <p class="note" style="margin-top:6px">Øya er ca. 300 meter bred. Høydene er et anslag for en typisk resortøy, ikke oppmålt.</p></section>
+  <section class="card"><div class="card-h"><h3>Når blir stedene oversvømt?</h3></div><div class="list" id="slrList"></div></section>
+  <section class="card"><div class="card-h"><h3>Hvor sikkert er dette?</h3></div>
+    <ul class="stack" style="margin:0;padding-left:18px">
+      <li>Tallene er <b>midtanslag for hele verden</b>. Rundt Maldivene ventes stigningen å bli omtrent som, eller litt over, verdensgjennomsnittet.</li>
+      <li>For 2100 spenner IPCC sitt sannsynlige intervall fra ca. 0,3 til 1,0 meter, avhengig av scenario. Etter 2100 øker usikkerheten mye, særlig på grunn av isen i Antarktis.</li>
+      <li>Høydene på stedene er omtrentlige. Det finnes få nøyaktige målinger for hver enkelt øy.</li>
+      <li>Koralløyer er ikke statiske. Forskning viser at mange øyer har vokst eller flyttet seg de siste tiårene, fordi bølger legger opp ny sand og korallgrus. Friske rev hjelper.</li>
+      <li>Øyer blir vanskelige å bo på før de står under vann, fordi flom ødelegger ferskvannet i bakken.</li>
+      <li>Maldivene bygger sjømurer og høyere kunstige øyer, som Hulhumalé, for å møte havstigningen.</li>
+    </ul>
+    <div class="eyebrow" style="margin-top:14px">Kilder</div>
+    <ul class="small" style="margin:6px 0 0;padding-left:18px">
+      <li><a href="https://www.ipcc.ch/report/ar6/wg1/" target="_blank" rel="noopener">IPCC AR6, arbeidsgruppe 1 (2021): sammendrag og kapittel 9</a></li>
+      <li><a href="https://sealevel.nasa.gov/ipcc-ar6-sea-level-projection-tool" target="_blank" rel="noopener">NASA: IPCC AR6 Sea Level Projection Tool</a></li>
+      <li><a href="https://www.nature.com/articles/s41467-018-02954-1" target="_blank" rel="noopener">Kench m.fl. (2018), Nature Communications: koralløyer som vokser</a></li>
+      <li><a href="https://www.science.org/doi/10.1126/sciadv.aap9741" target="_blank" rel="noopener">Storlazzi m.fl. (2018), Science Advances: flom og ferskvann på atoller</a></li>
+      <li><a href="https://climateknowledgeportal.worldbank.org/country/maldives" target="_blank" rel="noopener">Verdensbanken: klimaprofil for Maldivene</a></li>
+    </ul></section>`;
+}
+function slrUpdate(){
+  const sc=slr.sc, y=slr.year, extra=SLR_EXTRA[slr.ex][0], rise=slrAt(sc,y), water=rise+extra;
+  const yl=$("#slrYearL"); if(yl) yl.textContent=y;
+  const flooded=SLR_PLACES.filter(p=>water>=p.h).length;
+  $("#slrStats").innerHTML=`<div><b class="num">+${nf(rise*100)} cm</b><span>havstigning i ${y}</span></div><div><b class="num">${nf(water,2)} m</b><span>vannstand over dagens middelvann</span></div><div><b class="num">${flooded} av ${SLR_PLACES.length}</b><span>steder under vann</span></div>`;
+  // map
+  const W=360,H=560, la0=7.3, la1=-0.95, lo0=72.4, lo1=74.0;
+  const X=lo=>20+(lo-lo0)/(lo1-lo0)*(W-40), Y=la=>16+(la0-la)/(la0-la1)*(H-32), R=d=>d/(lo1-lo0)*(W-40);
+  const sea = Math.min(1, water/2.4);
+  const atollFill = `color-mix(in srgb, var(--palm) ${Math.round(100-sea*85)}%, var(--lagoon))`;
+  $("#slrMap").innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Forenklet kart over Maldivenes atoller" style="max-width:420px;margin:0 auto">
+    <rect width="${W}" height="${H}" rx="14" fill="var(--sea)" opacity=".18"/>
+    <line x1="0" x2="${W}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--muted)" stroke-dasharray="4 4"/><text x="6" y="${Y(0)-4}" font-size="10" fill="var(--muted)">Ekvator</text>
+    ${ATOLLS.map(([n,la,lo,rx,ry])=>`<ellipse cx="${X(lo)}" cy="${Y(la)}" rx="${R(rx*.6)}" ry="${R(ry*.6)}" fill="none" stroke="${atollFill}" stroke-width="4" stroke-dasharray="3 4" opacity=".9"/><text x="${X(lo)+R(rx*.6)+4}" y="${Y(la)+3}" font-size="9" fill="var(--muted)">${n}</text>`).join("")}
+    ${SLR_PLACES.map(p=>{ const under=water>=p.h; return `<g><circle cx="${X(p.lon)}" cy="${Y(p.lat)}" r="${p.me?8:6}" fill="${under?"var(--coral)":"var(--good)"}" stroke="var(--card)" stroke-width="2"/>${p.me?`<circle cx="${X(p.lon)}" cy="${Y(p.lat)}" r="13" fill="none" stroke="var(--coral)" stroke-width="2"/>`:""}</g>`; }).join("")}
+    <text x="${X(73.5)-14}" y="${Y(5.42)-16}" font-size="11" font-weight="800" fill="var(--ink)" text-anchor="end">Jawakara</text>
+    <text x="${X(73.53)+12}" y="${Y(4.19)+4}" font-size="11" font-weight="800" fill="var(--ink)">Malé</text>
+    <g transform="translate(14 ${H-46})"><circle cx="6" cy="6" r="6" fill="var(--good)"/><text x="18" y="10" font-size="11" fill="var(--ink)">Over vann</text><circle cx="6" cy="26" r="6" fill="var(--coral)"/><text x="18" y="30" font-size="11" fill="var(--ink)">Under vann ved valgt vannstand</text></g>
+  </svg>`;
+  // profile of Mabin (assumed)
+  const prof=[[0,-0.6],[20,-0.2],[35,0.4],[55,0.9],[80,1.2],[120,1.4],[150,1.5],[180,1.45],[220,1.3],[250,1.0],[270,0.6],[285,0.2],[300,-0.4]];
+  const PW=640,PH=220,pl=40,pr=12,pt=14,pb=26, hmin=-0.8, hmax=Math.max(2.6, water+0.3);
+  const PX=x=>pl+x/300*(PW-pl-pr), PY=h=>pt+(hmax-h)/(hmax-hmin)*(PH-pt-pb);
+  const ground=`M${PX(0)},${PY(hmin)} `+prof.map(([x,h])=>`L${PX(x).toFixed(1)},${PY(h).toFixed(1)}`).join(" ")+` L${PX(300)},${PY(hmin)} Z`;
+  const ticks=[]; for(let v=0; v<=hmax; v+=0.5) ticks.push(v);
+  const hAt=x=>{ for(let i=1;i<prof.length;i++){ const [x0,h0]=prof[i-1],[x1,h1]=prof[i]; if(x<=x1) return h0+(h1-h0)*(x-x0)/(x1-x0);} return prof[prof.length-1][1]; };
+  let land=0,wet=0; for(let x=0;x<=300;x++){ const h=hAt(x); if(h>0){ land++; if(h<=water) wet++; } }
+  const pct=Math.round(wet/land*100);
+  $("#slrProfile").innerHTML=`<svg viewBox="0 0 ${PW} ${PH}" role="img" aria-label="Tverrsnitt av Mabin med vannstand">
+    ${ticks.map(v=>`<line x1="${pl}" x2="${PW-pr}" y1="${PY(v)}" y2="${PY(v)}" stroke="var(--line)"/><text x="${pl-6}" y="${PY(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)">${nf(v,1)} m</text>`).join("")}
+    <path d="${ground}" fill="var(--sun)" opacity=".55"/>
+    <g transform="translate(${PX(150)} ${PY(1.5)})"><path d="M-2 0 C-3 -18 -1 -34 4 -48 l3 1 C3 -34 2 -18 2 0z" fill="var(--palm)"/><path d="M5 -48c-8-8-20-9-30-3 10-1 19 2 26 6zM5 -48c4-9 15-14 26-11-10 2-18 7-23 13zM5 -48c-1-10-9-16-19-18 8 4 13 10 16 19z" fill="var(--palm)"/></g>
+    <rect x="${pl}" y="${PY(water)}" width="${PW-pl-pr}" height="${PY(hmin)-PY(water)}" fill="var(--lagoon)" opacity=".45"/>
+    <line x1="${pl}" x2="${PW-pr}" y1="${PY(water)}" y2="${PY(water)}" stroke="var(--sea)" stroke-width="2.5"/>
+    <line x1="${pl}" x2="${PW-pr}" y1="${PY(0)}" y2="${PY(0)}" stroke="var(--muted)" stroke-dasharray="5 4"/>
+    <text x="${PW-pr-4}" y="${PY(0)+14}" text-anchor="end" font-size="11" fill="var(--muted)">dagens middelvann</text>
+    <text x="${pl+6}" y="${PY(water)-6}" font-size="12" font-weight="800" fill="var(--sea)">vannstand ${nf(water,2)} m</text>
+    <text x="${PX(150)}" y="${PH-6}" text-anchor="middle" font-size="12" font-weight="800" fill="${pct>0?"var(--coral)":"var(--good)"}">${pct>=100?"Hele øya under vann":pct>0?`Ca. ${pct} % av øya under vann`:"Øya er tørr"}</text>
+  </svg>`;
+  // list
+  $("#slrList").innerHTML=SLR_PLACES.slice().sort((a,b)=>a.h-b.h).map(p=>{ const yr=slrYearFor(sc,p.h,extra); const under=water>=p.h;
+    return `<div class="li"><span class="pill ${under?"coral":"good"}" style="min-width:64px;text-align:center">${under?"Under":"Tørt"}</span><div class="t"><b>${esc(p.n)}</b> <span class="small muted num">ca. ${nf(p.h,1)} m</span><div class="small muted">${esc(p.note)}</div></div><b class="num small" style="text-align:right">${yr?(yr<=2020?"allerede":"ca. "+yr):"etter 2150"}</b></div>`; }).join("")+`<p class="note" style="margin-top:8px">Året vannet når stedet med valgt scenario og vannstand.</p>`;
+}
+function bindSlr(){
+  const r=$("#slrYear"); r.addEventListener("input",()=>{slr.year=+r.value; slrUpdate();});
+  document.querySelectorAll("[data-slrsc]").forEach(b=>b.addEventListener("click",()=>{slr.sc=b.dataset.slrsc; document.querySelectorAll("[data-slrsc]").forEach(x=>x.setAttribute("aria-pressed",x===b)); slrUpdate();}));
+  document.querySelectorAll("[data-slrex]").forEach(b=>b.addEventListener("click",()=>{slr.ex=b.dataset.slrex; document.querySelectorAll("[data-slrex]").forEach(x=>x.setAttribute("aria-pressed",x===b)); slrUpdate();}));
+  const pb=$("#slrPlay"); pb.addEventListener("click",()=>{
+    if(slr.playing){ clearInterval(slr.playing); slr.playing=null; pb.textContent="▶ Spill av"; return; }
+    if(slr.year>=2150) slr.year=2020; pb.textContent="⏸ Pause";
+    slr.playing=setInterval(()=>{ slr.year=Math.min(2150,slr.year+2); const rr=$("#slrYear"); if(!rr){clearInterval(slr.playing);slr.playing=null;return;} rr.value=slr.year; slrUpdate(); if(slr.year>=2150){ clearInterval(slr.playing); slr.playing=null; pb.textContent="▶ Spill av"; } },120);
+  });
+  slrUpdate();
 }
 
 /* ---------- RESORT ---------- */
