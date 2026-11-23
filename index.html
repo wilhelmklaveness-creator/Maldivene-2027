@@ -271,9 +271,20 @@ details.lc[open] summary{border-bottom:1px solid var(--line);margin-bottom:12px}
 @keyframes drop{from{transform:translateY(-20px);opacity:0}30%{opacity:1}to{transform:translateY(60px);opacity:0}}
 @keyframes sway{from{transform:rotate(-2deg)}to{transform:rotate(2.5deg)}}
 @media (prefers-reduced-motion:reduce){.spin,.drift,.drift2,.wave1,.wave2,.drop,.sway{animation:none}}
+.tab-badge{position:absolute;top:4px;left:calc(50% + 6px);min-width:18px;height:18px;border-radius:9px;background:var(--coral);color:#fff;font-size:.68rem;display:grid;place-items:center;padding:0 5px}
+.chat{display:flex;flex-direction:column;gap:6px;min-height:50vh}
+.msg{max-width:82%;display:grid;gap:2px}
+.msg .bub{padding:8px 12px;border-radius:16px;background:var(--card);box-shadow:var(--shadow);overflow-wrap:anywhere;white-space:pre-wrap}
+.msg .meta{font-size:.72rem;color:var(--muted);font-weight:700;padding:0 6px}
+.msg.mine{align-self:flex-end;justify-items:end}
+.msg.mine .bub{background:var(--sea);color:var(--card)}
+.msg .who{display:flex;gap:6px;align-items:center}
+.daysep{align-self:center;font-size:.72rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;padding:6px 0}
+.chatbar{position:sticky;bottom:calc(64px + env(safe-area-inset-bottom,0px));display:flex;gap:8px;background:var(--card);padding-block:8px}
+.chatbar textarea{min-height:44px;max-height:140px;flex:1;min-width:0}
 /* Tab bar */
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
-.tabbar nav{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+.tabbar nav{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr)}
 .tabbar a{display:grid;justify-items:center;gap:2px;padding:8px 2px 8px;text-decoration:none;color:var(--muted);font-size:.72rem;font-weight:800}
 .tabbar a svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .tabbar a[aria-current=page]{color:var(--sea)}
@@ -314,9 +325,10 @@ textarea{min-height:90px;resize:vertical}
 <div class="tabbar"><nav id="tabs" aria-label="Hovedmeny">
   <a href="#hjem" data-tab="hjem"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Hjem</a>
   <a href="#plan" data-tab="plan"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Plan</a>
+  <a href="#chat" data-tab="chat" style="position:relative"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg>Chat<span class="tab-badge" id="chatBadge" hidden></span></a>
   <a href="#moro" data-tab="moro"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg>Moro</a>
   <a href="#resort" data-tab="resort"><svg viewBox="0 0 24 24"><path d="M12 21V10"/><path d="M12 10C9 6 5 6 3 8c3-.5 6 .5 9 2z"/><path d="M12 10c3-4 7-4 9-2-3-.5-6 .5-9 2z"/><path d="M12 10c-1-4 1-7 4-7-2 2-3 4-4 7z"/><path d="M3 21h18"/></svg>Resort</a>
-  <a href="#mer" data-tab="mer"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="17" rx="3"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>Lister og mer</a>
+  <a href="#mer" data-tab="mer"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="17" rx="3"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>Mer</a>
 </nav></div>
 
 <script>
@@ -655,7 +667,7 @@ function load(){
   catch(e){ S = freshState(); }
   if(!S.seeded){ seed(); S.seeded = true; save(); }
 }
-function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }catch(e){} }
+function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }catch(e){} if(typeof schedulePush==="function") schedulePush(); }
 function seed(){
   S.profiles.forEach(p=>{
     const items = [...PACK_TEMPLATE.felles, ...(p.id==="p1"||p.id==="p2" ? PACK_TEMPLATE.voksen : PACK_TEMPLATE.ungdom)];
@@ -702,12 +714,13 @@ function stats(pid){
 }
 
 /* ================= ROUTING ================= */
-const TABS = ["hjem","plan","moro","resort","mer"];
+const TABS = ["hjem","plan","chat","moro","resort","mer"];
 let sub = {moro:"utfordringer", mer:"pakkeliste"};
 try{ const ss=JSON.parse(localStorage.getItem(LS_KEY+"-sub")||"null"); if(ss) sub=Object.assign(sub,ss);}catch(e){}
 let resAi = "Alle"; let planDay = null, resCat = "Alle", chCat = "Alle", chWho = null, quizState = null;
 
 function route(){
+  if(/^#familie-/.test(location.hash)){ const c=location.hash.slice(1); if(joinFamily(c)) toast("Du er med i familiechatten!"); history.replaceState(null,"","#chat"); }
   const h = (location.hash||"").replace("#","");
   const tab = TABS.includes(h) ? h : "hjem";
   document.querySelectorAll("#tabs a").forEach(a=>a.toggleAttribute("aria-current",a.dataset.tab===tab) || a.setAttribute("aria-current", a.dataset.tab===tab?"page":"false"));
@@ -1284,20 +1297,22 @@ function profilesView(){
   <section class="card"><div class="card-h"><h2>Navn og figur</h2></div>
     <div class="stack">${S.profiles.map(p=>`<div class="row"><select aria-label="Figur for ${esc(p.name)}" id="em-${p.id}" data-em="${p.id}" style="width:72px;font-size:22px;padding:4px">${EMOJIS.map(e=>`<option ${e===p.emoji?"selected":""}>${e}</option>`).join("")}</select><input type="text" id="nm-${p.id}" data-nm="${p.id}" value="${esc(p.name)}" style="flex:1;min-width:0" aria-label="Navn"></div>`).join("")}</div></section>
   <section class="card"><div class="card-h"><h2>Del med familien</h2></div>
-    <p>Appen lagrer alt på telefonen, også uten nett. For å samle poeng, pakkelister og plan fra alle fire: trykk <b>Del min status</b> og send koden til de andre på Messenger eller SMS. Den som får koden, limer den inn under. Alt slås sammen, ingenting blir slettet.</p>
+    <p>${FB.fam&&FB.status==="ok"?"<b>Familiechatten er koblet til, så poeng, lister og plan deles automatisk.</b> Koden under trengs bare som reserve. ":""}Appen lagrer alt på telefonen, også uten nett. For å samle poeng, pakkelister og plan fra alle fire: trykk <b>Del min status</b> og send koden til de andre på Messenger eller SMS. Den som får koden, limer den inn under. Alt slås sammen, ingenting blir slettet.</p>
     <div class="row" style="margin-top:12px"><button type="button" class="btn" id="shareBtn">Del min status</button></div>
     <label class="f" style="margin-top:12px">Lim inn kode fra et familiemedlem<textarea id="importTxt" placeholder="JAWA1:…"></textarea></label>
     <div class="row" style="margin-top:8px"><button type="button" class="btn ghost" id="importBtn">Slå sammen</button></div></section>`;
 }
 function exportCode(){
-  const data = {profiles:S.profiles,done:S.done,quiz:S.quiz,pack:S.pack,shop:S.shop,plan:S.plan,flights:S.flights};
-  return "JAWA1:"+btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+  return "JAWA1:"+btoa(unescape(encodeURIComponent(JSON.stringify(exportData()))));
 }
 function mergeList(a,b){ const m=new Map(); [...(a||[]),...(b||[])].forEach(x=>{ const c=m.get(x.id); if(!c || (x.ts||0)>(c.ts||0)) m.set(x.id,x); }); return [...m.values()]; }
 function mergeMap(a,b){ const out={...(a||{})}; Object.entries(b||{}).forEach(([k,v])=>{ if(!out[k] || (v.ts||0)>(out[k].ts||0)) out[k]=v; }); return out; }
 function importCode(txt){
   txt = txt.trim(); const i = txt.indexOf("JAWA1:"); if(i<0) throw new Error("format");
-  const d = JSON.parse(decodeURIComponent(escape(atob(txt.slice(i+6).replace(/\s/g,"")))));
+  importData(JSON.parse(decodeURIComponent(escape(atob(txt.slice(i+6).replace(/\s/g,""))))));
+}
+function exportData(){ return {profiles:S.profiles,done:S.done,quiz:S.quiz,pack:S.pack,shop:S.shop,plan:S.plan,flights:S.flights}; }
+function importData(d){
   S.profiles = mergeList(S.profiles,d.profiles).sort((a,b)=>a.id.localeCompare(b.id));
   const ids = new Set([...Object.keys(S.done),...Object.keys(d.done||{})]); ids.forEach(k=>S.done[k]=mergeMap(S.done[k],(d.done||{})[k]));
   const qids = new Set([...Object.keys(S.quiz),...Object.keys(d.quiz||{})]); qids.forEach(k=>S.quiz[k]=mergeMap(S.quiz[k],(d.quiz||{})[k]));
@@ -1314,6 +1329,106 @@ function bindProfiles(){
     try{ await navigator.clipboard.writeText(text); toast("Kopiert. Lim inn i en melding."); }catch(e){ $("#importTxt").value=code; $("#importTxt").select(); toast("Marker og kopier koden i feltet."); } });
   $("#importBtn").addEventListener("click",()=>{ try{ importCode($("#importTxt").value); toast("Slått sammen!"); render("mer"); }catch(e){ toast("Fant ingen gyldig kode. Lim inn hele meldingen."); } });
 }
+
+
+/* ================= FAMILIECHAT OG SYNK (Firebase) ================= */
+const FIREBASE_CONFIG = null; // fylles inn med familiens Firebase-oppsett
+const FB_VER = "10.12.2";
+const lsGet=k=>{try{return localStorage.getItem(LS_KEY+"-"+k);}catch(e){return null;}};
+const lsSet=(k,v)=>{try{localStorage.setItem(LS_KEY+"-"+k,v);}catch(e){}};
+let DEV = lsGet("dev"); if(!DEV){ DEV = uid()+uid(); lsSet("dev",DEV); }
+const FB = {status: FIREBASE_CONFIG?"idle":"noconfig", db:null, uid:null, fam:lsGet("fam"), msgs:[], loading:false, lastPushed:"", pushT:null, unsub:[]};
+function loadScript(src){ return new Promise((res,rej)=>{ const sc=document.createElement("script"); sc.src=src; sc.onload=res; sc.onerror=()=>rej(new Error("load")); document.head.appendChild(sc); }); }
+async function fbInit(){
+  if(!FIREBASE_CONFIG || FB.status==="ok" || FB.loading) return;
+  FB.loading=true; FB.status="loading";
+  try{
+    const base=`https://www.gstatic.com/firebasejs/${FB_VER}/`;
+    await loadScript(base+"firebase-app-compat.js"); await loadScript(base+"firebase-auth-compat.js"); await loadScript(base+"firebase-firestore-compat.js");
+    if(!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+    FB.db=firebase.firestore();
+    try{ await FB.db.enablePersistence({synchronizeTabs:true}); }catch(e){}
+    const cred=await firebase.auth().signInAnonymously(); FB.uid=cred.user.uid;
+    FB.status="ok";
+    if(FB.fam) fbListen();
+  }catch(e){ FB.status="error"; }
+  FB.loading=false;
+  if(curTab()==="chat") render("chat");
+}
+function curTab(){ const h=location.hash.slice(1); return TABS.includes(h)?h:"hjem"; }
+function famPath(){ return `familier/${FB.fam}`; }
+function fbListen(){
+  FB.unsub.forEach(u=>u()); FB.unsub=[];
+  FB.unsub.push(FB.db.collection(famPath()+"/meldinger").orderBy("ts").limitToLast(400).onSnapshot(snap=>{
+    FB.msgs=snap.docs.map(d=>({id:d.id,...d.data({serverTimestamps:"estimate"})}));
+    updateBadge(); if(curTab()==="chat") renderChatList();
+  },()=>{FB.status="error";}));
+  FB.unsub.push(FB.db.collection(famPath()+"/enheter").onSnapshot(snap=>{
+    let changed=false;
+    snap.docs.forEach(d=>{ if(d.id===DEV) return; const v=d.data(); if(!v||!v.data) return; try{ const before=JSON.stringify(exportData()); importData(JSON.parse(v.data)); if(JSON.stringify(exportData())!==before) changed=true; }catch(e){} });
+    if(changed){ const a=document.activeElement; if(!a || !/INPUT|TEXTAREA|SELECT/.test(a.tagName)) render(curTab()); }
+  },()=>{}));
+  schedulePush(true);
+}
+function schedulePush(now_){
+  if(FB.status!=="ok"||!FB.fam) return;
+  clearTimeout(FB.pushT);
+  FB.pushT=setTimeout(()=>{ const data=JSON.stringify(exportData()); if(data===FB.lastPushed) return; FB.lastPushed=data;
+    FB.db.doc(famPath()+"/enheter/"+DEV).set({data,who:S.me||"",ts:firebase.firestore.FieldValue.serverTimestamp()}).catch(()=>{FB.lastPushed="";}); }, now_?200:1500);
+}
+function joinFamily(code){
+  code=String(code||"").trim().replace(/^.*familie-/,"").replace(/[^A-Za-z0-9]/g,"");
+  if(code.length<12) return false;
+  FB.fam=code; lsSet("fam",code); if(FB.status==="ok") fbListen(); else fbInit(); return true;
+}
+function inviteLink(){ return `${location.origin}${location.pathname}#familie-${FB.fam}`; }
+function updateBadge(){
+  const last=+(lsGet("lastread")||0), b=$("#chatBadge"); if(!b) return;
+  const n=FB.msgs.filter(m=>m.uid!==FB.uid && msTs(m)>last).length;
+  b.hidden = !n || curTab()==="chat"; b.textContent = n>9?"9+":n;
+}
+const msTs = m => m.ts && m.ts.toMillis ? m.ts.toMillis() : (m.cts||0);
+VIEWS.chat = () => {
+  if(FB.status==="noconfig") return `<section class="card"><div class="card-h"><h2>Familiechat</h2><span class="pill warn">Kommer snart</span></div><p>Her skal familien snakke sammen om reisen. Chatten blir aktiv så snart Firebase er satt opp. Da deles også poeng, pakkelister og plan automatisk mellom telefonene.</p></section>`;
+  if(FB.status==="error") return `<section class="card"><div class="card-h"><h2>Familiechat</h2></div><div class="empty">Fikk ikke kontakt med chatten. Sjekk nettet og prøv igjen.</div><div class="row" style="margin-top:10px"><button class="btn" type="button" id="fbRetry">Prøv igjen</button></div></section>`;
+  if(!FB.fam) return `<section class="card"><div class="card-h"><h2>Familiechat</h2></div>
+    <p>Én i familien starter chatten og sender invitasjonslenken til de andre. Alle som har lenken, kan lese og skrive.</p>
+    <div class="row" style="margin-top:12px"><button class="btn" type="button" id="famNew">Start familiechatten</button></div>
+    <label class="f" style="margin-top:16px">Har du fått en invitasjon? Lim inn lenken eller koden<input type="text" id="famCode" autocomplete="off"></label>
+    <div class="row" style="margin-top:8px"><button class="btn ghost" type="button" id="famJoin">Bli med</button></div></section>`;
+  return `<section class="card" style="padding-bottom:4px"><div class="card-h"><h2>Familiechat</h2><button class="btn ghost sm" type="button" id="famInvite">Inviter</button></div>
+    <div class="chat" id="chatList" aria-live="polite"></div>
+    <form class="chatbar" id="chatForm"><textarea id="chatTxt" rows="1" placeholder="Skriv til familien som ${esc(me().name.split(" ")[0])}" aria-label="Melding"></textarea><button class="btn coral" type="submit">Send</button></form></section>`;
+};
+function renderChatList(){
+  const el=$("#chatList"); if(!el) return;
+  if(FB.status!=="ok" && !FB.msgs.length){ el.innerHTML=`<div class="empty">Kobler til …</div>`; return; }
+  if(!FB.msgs.length){ el.innerHTML=`<div class="empty">Ingen meldinger ennå. Si hei! Forslag: «Hvem blir med på snorkling i morgen tidlig?»</div>`; return; }
+  let lastDay=""; const out=[];
+  FB.msgs.forEach(m=>{ const t=msTs(m), d=new Date(t); const day=d.toLocaleDateString("nb-NO",{weekday:"long",day:"numeric",month:"long"});
+    if(day!==lastDay){ out.push(`<div class="daysep">${esc(day)}</div>`); lastDay=day; }
+    const p=prof(m.pid)||{name:"Ukjent",emoji:"🐚"}; const mine=m.uid===FB.uid;
+    out.push(`<div class="msg ${mine?"mine":""}"><div class="meta who">${mine?"":`<span>${esc(p.emoji)}</span><span>${esc(p.name.split(" ")[0])}</span>`}<span>${d.toLocaleTimeString("nb-NO",{hour:"2-digit",minute:"2-digit"})}</span></div><div class="bub">${esc(m.text)}</div></div>`); });
+  el.innerHTML=out.join("");
+  lsSet("lastread", String(Date.now())); updateBadge();
+  setTimeout(()=>window.scrollTo(0,document.documentElement.scrollHeight),50);
+}
+AFTER.chat = () => {
+  fbInit();
+  const r=$("#fbRetry"); r&&r.addEventListener("click",()=>{FB.status="idle";fbInit();});
+  const n=$("#famNew"); n&&n.addEventListener("click",()=>{ joinFamily(uid()+uid()+uid()); render("chat"); toast("Familiechatten er startet. Inviter de andre!"); });
+  const j=$("#famJoin"); j&&j.addEventListener("click",()=>{ if(joinFamily($("#famCode").value)){ render("chat"); toast("Du er med i familiechatten!"); } else toast("Fant ingen gyldig kode."); });
+  const inv=$("#famInvite"); inv&&inv.addEventListener("click",async()=>{ const text=`Bli med i familiechatten i Jawakara-appen: ${inviteLink()}`;
+    if(navigator.share){ try{ await navigator.share({text}); return; }catch(e){ if(e&&e.name==="AbortError") return; } }
+    try{ await navigator.clipboard.writeText(text); toast("Lenken er kopiert."); }catch(e){ toast(inviteLink()); } });
+  const f=$("#chatForm");
+  if(f){ renderChatList();
+    const ta=$("#chatTxt"); ta.addEventListener("input",()=>{ta.style.height="auto";ta.style.height=Math.min(140,ta.scrollHeight)+"px";});
+    ta.addEventListener("keydown",e=>{ if(e.key==="Enter"&&!e.shiftKey&&!/iPhone|iPad|Android/.test(navigator.userAgent)){ e.preventDefault(); f.requestSubmit(); } });
+    f.addEventListener("submit",e=>{ e.preventDefault(); const text=ta.value.trim(); if(!text||FB.status!=="ok") return; ta.value=""; ta.style.height="";
+      FB.db.collection(famPath()+"/meldinger").add({text:text.slice(0,2000),pid:S.me||"p1",uid:FB.uid,cts:Date.now(),ts:firebase.firestore.FieldValue.serverTimestamp()}).catch(()=>toast("Meldingen ble ikke sendt. Prøv igjen.")); });
+  }
+};
 
 /* ---------- SHEET ---------- */
 function sheet(html,bind){
@@ -1336,6 +1451,7 @@ load();
 window.addEventListener("hashchange",route);
 route();
 if(!S.me) setTimeout(()=>pickMe(true),300);
+if(FIREBASE_CONFIG && FB.fam) fbInit();
 if("serviceWorker" in navigator && location.protocol==="https:" && !/claude|claudeusercontent/.test(location.host)){
   navigator.serviceWorker.register("sw.js").catch(()=>{});
 }
