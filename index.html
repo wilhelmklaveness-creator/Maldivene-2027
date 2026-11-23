@@ -314,7 +314,7 @@ textarea{min-height:90px;resize:vertical}
       <button class="me-btn" id="meBtn" type="button" aria-label="Bytt profil"><span class="av" id="meAv">🐢</span><span id="meName">Velg</span></button>
     </div>
     <h1 id="heroTitle">Snart sjøfly og korallrev</h1>
-    <p class="sub" id="heroSub">21.–27. februar 2027 · 6 netter</p>
+    <p class="sub" id="heroSub">19.–28. februar 2027 · 6 netter på Jawakara</p>
     <div class="count" id="count" aria-live="polite"></div>
   </div>
   <svg class="waves" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40c120 22 240 30 360 18S600 14 720 22s240 38 360 36 240-26 360-30v52H0z"/></svg>
@@ -340,6 +340,16 @@ const TRIP = {
   islandOffset: 6,   // Jawakaras øytid, GMT+6
   mvOffset: 5        // Maldivisk tid (Malé), GMT+5
 };
+/* Flyreisen, bestillingsreferanse ZOQ9VX. Tider er lokal tid på hver flyplass. */
+const BOOKING_REF = "ZOQ9VX";
+const FLIGHTS = [
+  {dir:"Utreise", no:"SK 271", al:"SAS", from:"Oslo (OSL)", to:"Bergen (BGO)", dd:"2027-02-19", dt:"15.25", ad:"2027-02-19", at:"16.25", dur:"1 t", bag:"Innsjekket 23 kg. Kun personlig veske i kabinen, ikke håndbagasje.", noCabin:true},
+  {dir:"Utreise", no:"LX 8315", al:"Edelweiss for SWISS", from:"Bergen (BGO)", to:"Zürich (ZRH)", dd:"2027-02-19", dt:"17.45", ad:"2027-02-19", at:"20.05", dur:"2 t 20 min", bag:"Innsjekket 23 kg og håndbagasje 8 kg.", lay:"1 t 20 min i Bergen"},
+  {dir:"Utreise", no:"LX 8066", al:"Edelweiss for SWISS", from:"Zürich (ZRH)", to:"Malé (MLE), terminal 1", dd:"2027-02-19", dt:"22.15", ad:"2027-02-20", at:"11.35", dur:"9 t 20 min", bag:"Innsjekket 23 kg og håndbagasje 8 kg.", lay:"2 t 10 min i Zürich"},
+  {dir:"Hjemreise", no:"LX 8067", al:"Edelweiss for SWISS", from:"Malé (MLE), terminal 1", to:"Zürich (ZRH)", dd:"2027-02-27", dt:"13.20", ad:"2027-02-27", at:"19.40", dur:"10 t 20 min", bag:"Innsjekket 23 kg og håndbagasje 8 kg."},
+  {dir:"Hjemreise", no:"LX 1254", al:"SWISS", from:"Zürich (ZRH)", to:"Stockholm (ARN), terminal 5", dd:"2027-02-27", dt:"21.05", ad:"2027-02-27", at:"23.35", dur:"2 t 30 min", bag:"Innsjekket 23 kg og håndbagasje 8 kg.", lay:"1 t 25 min i Zürich"},
+  {dir:"Hjemreise", no:"SK 843", al:"SAS", from:"Stockholm (ARN), terminal 5", to:"Oslo (OSL)", dd:"2027-02-28", dt:"09.00", ad:"2027-02-28", at:"10.00", dur:"1 t", bag:"Innsjekket 23 kg. Kun personlig veske i kabinen, ikke håndbagasje.", noCabin:true, lay:"9 t 25 min på Arlanda, over natten"}
+];
 const DEFAULT_PROFILES = [
   {id:"p1", name:"Mamma", emoji:"🐢"},
   {id:"p2", name:"Pappa", emoji:"🦈"},
@@ -737,16 +747,12 @@ function render(tab){
 function setSub(tab,val){ sub[tab]=val; try{localStorage.setItem(LS_KEY+"-sub",JSON.stringify(sub));}catch(e){} render(tab); }
 
 /* ================= HEADER ================= */
-function departureMs(){
-  const f = S.flights.find(f=>f.id==="f-ut");
-  if(f && f.dep){ const t = Date.parse(f.dep); if(!isNaN(t)) return t; }
-  return Date.UTC(2027,1,20,12,0) - 3600e3; // antatt: lør 20. feb kl. 12 norsk tid
-}
-function depLabel(){ const f=S.flights.find(f=>f.id==="f-ut"); return f&&f.dep ? "til avreise" : "til avreise (anslått 20. feb)"; }
+function departureMs(){ return Date.UTC(2027,1,19,14,25); } // SK 271 fra Gardermoen 19. feb kl. 15.25 norsk tid
+function depLabel(){ return "til SK 271 letter fra Gardermoen"; }
 function renderHeader(){
   const p = me();
   $("#meAv").textContent = p.emoji; $("#meName").textContent = p.name.split(" ")[0];
-  const ci = Date.UTC(2027,1,21) - TRIP.islandOffset*3600e3, co = Date.UTC(2027,1,27,12) - TRIP.islandOffset*3600e3;
+  const ci = Date.UTC(2027,1,21) - TRIP.islandOffset*3600e3, co = Date.UTC(2027,1,28,9);
   const dep = departureMs(), n = now();
   const c = $("#count");
   if(n < dep){
@@ -755,7 +761,7 @@ function renderHeader(){
     c.innerHTML = `<div class="big-days"><b>${d}</b><span>dager igjen</span></div><div class="hm"><span class="num">${h} t ${mi} min</span><br>${depLabel()}</div>`;
   } else if(n < co){
     const day = Math.max(1,Math.floor((n-ci)/864e5)+1);
-    $("#heroTitle").textContent = n<ci ? "Vi er på vei!" : `Dag ${day} av 7 på Jawakara`;
+    $("#heroTitle").textContent = n<ci ? "Vi er på vei!" : n>Date.UTC(2027,1,27,8,20) ? "På vei hjem" : `Dag ${day} av 7 på Jawakara`;
     c.innerHTML = `<div><b>${fmtInOffset(n,TRIP.islandOffset)}</b><span>øytid</span></div><div><b>${fmtInOffset(n,osloOffset(n))}</b><span>Norge</span></div>`;
   } else {
     $("#heroTitle").textContent = "Velkommen hjem!";
@@ -804,13 +810,14 @@ function factOfDay(){ return FACTS[dayIdx()%FACTS.length]; }
 
 function deadlines(){
   const out = [];
-  const f = S.flights.find(f=>f.id==="f-ut");
-  const depIso = f&&f.dep ? f.dep.slice(0,10) : "2027-02-20";
-  const imuga = diso(new Date(dparse(depIso).getTime()-4*864e5));
+  const imuga = "2027-02-15";
   out.push({d:"2026-11-30",t:"Siste dag for Winter Getaways (30 %)",x:"Gjelder bare direktebooking hos resorten. Dere har booket via Booking.com."});
   out.push({d:"2027-02-01",t:"Betal sjøflyet",x:"Resorten sender faktura. Alle fire er over 12 år: 4 × 430 = 1 720 dollar tur–retur."});
-  out.push({d:"2027-02-14",t:"Send flyinfo og alle navn til resorten",x:"Senest 7 dager før ankomst, til reservations@jawakara.com. Uten dette bestilles ikke sjøflyet."});
-  out.push({d:imuga,t:"Fyll ut IMUGA reiseerklæring",x:"For alle fire, innen 96 timer før reisen, på imuga.immigration.gov.mv."});
+  out.push({d:"2027-02-14",t:"Send flyinfo og alle navn til resorten",x:"Senest 7 dager før ankomst, til reservations@jawakara.com: LX 8066 lander Malé 20. feb kl. 11.35, LX 8067 går fra Malé 27. feb kl. 13.20. Uten dette bestilles ikke sjøflyet."});
+  out.push({d:"2027-01-15",t:"Avklar natten 20.–21. februar",x:"Dere lander i Malé lørdag 20. feb kl. 11.35, men innsjekk på Jawakara er søndag 21. feb. Natten er ikke booket ennå."});
+  out.push({d:"2027-01-15",t:"Avklar natten på Arlanda 27.–28. februar",x:"Dere lander 23.35 og flyr videre 09.00. Vurder flyplasshotell."});
+  out.push({d:"2027-02-18",t:"Pakk maks 20 kg per koffert",x:"Flyene tillater 23 kg, men sjøflyet bare 20 kg innsjekket og 5 kg håndbagasje per person."});
+  out.push({d:imuga,t:"Fyll ut IMUGA reiseerklæring",x:"For alle fire, tidligst 96 timer før avreise (fra 15. feb kl. 15.25), på imuga.immigration.gov.mv."});
   out.push({d:"2027-02-19",t:"Sjekk at passene er gyldige",x:"Minst 6 måneder etter ankomst, dvs. til 21. august 2027 eller senere."});
   out.push({d:"2027-02-19",t:"Ta ut riktige dollarsedler",x:"Gamle 100-dollarsedler (hvite) og britiske papirsedler på 20 og 50 pund tas ikke imot."});
   return out.sort((a,b)=>a.d.localeCompare(b.d));
@@ -823,54 +830,42 @@ function deadlinesHTML(){
 
 /* ---------- PLAN ---------- */
 function tripDays(){
-  const f = S.flights.find(f=>f.id==="f-ut"), h = S.flights.find(f=>f.id==="f-hjem");
-  const start = f&&f.dep ? f.dep.slice(0,10) : "2027-02-20";
-  const end = h&&h.arr ? h.arr.slice(0,10) : "2027-02-27";
-  const days=[]; for(let t=dparse(start).getTime(); t<=dparse(end).getTime(); t+=864e5) days.push(diso(new Date(t)));
-  if(!days.includes("2027-02-27")) days.push("2027-02-27");
+  const days=[]; for(let t=dparse("2027-02-19").getTime(); t<=dparse("2027-02-28").getTime(); t+=864e5) days.push(diso(new Date(t)));
   return days;
 }
 function fixedEvents(day){
   const ev = [];
-  S.flights.forEach(fl=>{
-    if(fl.dep && fl.dep.slice(0,10)===day) ev.push({tm:fl.dep.slice(11,16),t:`Fly ${fl.no||""} ${fl.from} → ${fl.to}`.replace(/\s+/g," "),d:`${fl.dir}${fl.via?`, via ${fl.via}`:""}. Lokal tid.`});
-    if(fl.arr && fl.arr.slice(0,10)===day) ev.push({tm:fl.arr.slice(11,16),t:`Lander ${fl.to}`,d:`${fl.dir}. Lokal tid.`});
+  FLIGHTS.forEach(fl=>{
+    if(fl.dd===day) ev.push({tm:fl.dt,t:`${fl.no} ${fl.from} → ${fl.to}`,d:`${fl.al}, ${fl.dur}. Lander ${fl.ad!==fl.dd?fmtDay(fl.ad)+" ":""}kl. ${fl.at}. Lokal tid.${fl.noCabin?" Ikke håndbagasje inkludert.":""}`});
+    if(fl.ad===day && fl.ad!==fl.dd) ev.push({tm:fl.at,t:`Lander ${fl.to}`,d:`${fl.no}. Lokal tid (Malé, GMT+5).`});
   });
-  if(day==="2027-02-21"){ ev.push({tm:"",t:"Sjøfly fra Malé til Jawakara",d:"Ca. 35–40 min. Går 1–2 timer etter at alle har kommet gjennom passkontrollen. Møt resortens representant ved Crown & Champa-skranken (B9, terminal 2)."}); ev.push({tm:"14.00",t:"Innsjekk",d:"Villaen er klar fra kl. 14 øytid. Still klokka én time frem fra Malé-tid."}); }
-  if(day==="2027-02-27"){ ev.push({tm:"12.00",t:"Utsjekk",d:"Siste sjøfly fra Jawakara går mellom kl. 13 og 16."}); ev.push({tm:"",t:"Sjøfly til Malé",d:"Hjemreisen må gå fra Malé kl. 09.00 eller senere (Malé-tid)."}); }
+  if(day==="2027-02-20"){ ev.push({tm:"",sk:"12.00",t:"Åpent spørsmål: hvor sover vi natt til 21. februar?",d:"Innsjekk på Jawakara er først søndag 21. feb. Avklar med resorten om dere kan komme en natt tidligere (sjøflyet rekker dere, landing før 15.45), eller bestill en natt i Malé eller Hulhumalé.",warn:true}); }
+  if(day==="2027-02-21"){ ev.push({tm:"",sk:"11.00",t:"Sjøfly fra Malé til Jawakara",d:"Ca. 35–40 min. Dagen avhenger av løsningen for natten 20. feb. Møt resortens representant ved Crown & Champa-skranken (B9, terminal 2)."}); ev.push({tm:"14.00",t:"Innsjekk",d:"Villaen er klar fra kl. 14 øytid. Still klokka én time frem fra Malé-tid."}); }
+  if(day==="2027-02-27"){ ev.push({tm:"",sk:"08.01",t:"Tidlig sjøfly fra Jawakara til Malé",d:"LX 8067 går kl. 13.20 Malé-tid (14.20 øytid). Avtal tid for sjøflyet med resorten, sannsynligvis tidlig formiddag."}); ev.push({tm:"",sk:"08.00",t:"Utsjekk før sjøflyet",d:"Vanlig utsjekk er kl. 12, men dere må dra tidligere."}); ev.push({tm:"23.35",t:"Åpent spørsmål: natt på Arlanda",d:"9 t 25 min ventetid til SK 843 kl. 09.00. Vurder hotell ved flyplassen.",warn:true}); }
   return ev;
 }
 VIEWS.plan = () => {
   const days = tripDays();
-  if(!planDay || !days.includes(planDay)) planDay = days.includes(diso(new Date())) ? diso(new Date()) : "2027-02-21";
+  if(!planDay || !days.includes(planDay)) planDay = days.includes(diso(new Date())) ? diso(new Date()) : "2027-02-19";
   const items = S.plan.filter(x=>!x.del && x.day===planDay).sort((a,b)=>(a.tm||"99").localeCompare(b.tm||"99"));
   const fixed = fixedEvents(planDay);
-  const all = [...fixed.map(e=>({...e,fixed:true})), ...items.map(i=>({tm:i.tm,t:i.t,d:i.note,id:i.id}))].sort((a,b)=>(a.tm||"").localeCompare(b.tm||""));
+  const all = [...fixed.map(e=>({...e,fixed:true})), ...items.map(i=>({tm:i.tm,t:i.t,d:i.note,id:i.id}))].sort((a,b)=>(a.sk||a.tm||"").localeCompare(b.sk||b.tm||""));
+  const tzNote = planDay<="2027-02-20"||planDay>="2027-02-27" ? "Flytider i lokal tid" : "Tider på resorten er i øytid";
   return `
   <section class="card">
-    <div class="card-h"><h2>Kalender</h2><span class="small muted">Tider på resorten er i øytid</span></div>
+    <div class="card-h"><h2>Kalender</h2><span class="small muted">${tzNote}</span></div>
     <div class="days" role="group" aria-label="Velg dag">${days.map(d=>{const dd=dparse(d); const onResort=d>="2027-02-21"&&d<="2027-02-27"; return `<button class="day ${onResort?"trip":""}" type="button" data-day="${d}" aria-pressed="${d===planDay}"><span>${WD[dd.getUTCDay()]}</span><b>${dd.getUTCDate()}</b><span>${MON[dd.getUTCMonth()]}</span></button>`;}).join("")}</div>
   </section>
   <section class="card">
     <div class="card-h"><h3>${fmtDay(planDay)}</h3><button class="btn sm" type="button" id="addEvBtn">Legg til</button></div>
-    ${all.length? all.map(e=>`<div class="ev ${e.fixed?"fixed":""}"><div class="tm">${esc(e.tm||"–")}</div><div style="min-width:0"><div class="tt">${esc(e.t)}</div>${e.d?`<div class="dd">${esc(e.d)}</div>`:""}</div>${e.id?`<button class="iconbtn" type="button" data-delev="${e.id}" aria-label="Slett">✕</button>`:"<span></span>"}</div>`).join("") : `<div class="empty">Ingenting planlagt ennå. Legg til en aktivitet her, eller trykk «Legg i plan» på en aktivitet under Resort.</div>`}
+    ${all.length? all.map(e=>`<div class="ev ${e.fixed?"fixed":""}" ${e.warn?'style="background:var(--coral-soft);border-radius:12px;padding-inline:8px"':""}><div class="tm">${esc(e.tm||"–")}</div><div style="min-width:0"><div class="tt">${esc(e.t)}</div>${e.d?`<div class="dd">${esc(e.d)}</div>`:""}</div>${e.id?`<button class="iconbtn" type="button" data-delev="${e.id}" aria-label="Slett">✕</button>`:"<span></span>"}</div>`).join("") : `<div class="empty">Ingenting planlagt ennå. Legg til en aktivitet her, eller trykk «Legg i plan» på en aktivitet under Resort.</div>`}
   </section>
   <section class="card">
-    <div class="card-h"><h2>Flyreisen</h2><span class="pill warn">${S.flights.some(f=>f.no)?"Oppdatert":"Fyll inn når billettene er klare"}</span></div>
-    <div class="stack">${S.flights.map(f=>`
-      <div class="flight" data-fid="${f.id}">
-        <div class="fh"><b>${esc(f.dir)}</b><span class="small muted">Lokal tid på hver flyplass</span></div>
-        <div class="fgrid">
-          <label class="f">Flynummer<input type="text" id="fl-${f.id}-no" data-k="no" value="${esc(f.no)}" placeholder="f.eks. QR 176"></label>
-          <label class="f">Via<input type="text" id="fl-${f.id}-via" data-k="via" value="${esc(f.via)}" placeholder="f.eks. Doha"></label>
-          <label class="f">Fra<input type="text" id="fl-${f.id}-from" data-k="from" value="${esc(f.from)}"></label>
-          <label class="f">Til<input type="text" id="fl-${f.id}-to" data-k="to" value="${esc(f.to)}"></label>
-          <label class="f">Avgang<input type="datetime-local" id="fl-${f.id}-dep" data-k="dep" value="${esc(f.dep)}"></label>
-          <label class="f">Ankomst<input type="datetime-local" id="fl-${f.id}-arr" data-k="arr" value="${esc(f.arr)}"></label>
-        </div>
-      </div>`).join("")}
-      <p class="note">Sjøflyet krever at dere lander i Malé mellom kl. 06.00 og 15.45, og at hjemflyet går etter kl. 09.00.</p>
-    </div>
+    <div class="card-h"><h2>Flyreisen</h2><span class="pill">Ref. <b class="num">${BOOKING_REF}</b></span></div>
+    ${["Utreise","Hjemreise"].map(dir=>`<div class="eyebrow" style="margin-top:6px">${dir} · ${dir==="Utreise"?"fre 19. feb, 16 t 10 min, 2 stopp":"lør 27. feb, 24 t 40 min, 2 stopp"}</div>
+      ${FLIGHTS.filter(f=>f.dir===dir).map(f=>`${f.lay?`<div class="small" style="padding:6px 0 6px 62px;color:${/natten/.test(f.lay)?"var(--coral)":"var(--muted)"};font-weight:700">Bytte: ${esc(f.lay)}</div>`:""}
+      <div class="ev"><div class="tm">${f.dt}</div><div style="min-width:0"><div class="tt">${esc(f.no)} · ${esc(f.from)} → ${esc(f.to)}</div><div class="dd">${esc(f.al)}, ${f.dur}. Lander ${f.ad!==f.dd?fmtDay(f.ad)+" ":""}kl. ${f.at}.</div><div class="dd">${f.noCabin?'<span class="pill coral">Ikke håndbagasje</span> ':""}${esc(f.bag)}</div></div><span></span></div>`).join("")}`).join("")}
+    <p class="note" style="margin-top:8px">Alle tider er lokal tid på hver flyplass. Sjekk tidene hos flyselskapet før avreise. På SAS-strekningene er bare en liten personlig veske med i kabinen. Sjøflyet tillater 20 kg innsjekket og 5 kg håndbagasje per person.</p>
   </section>`;
 };
 AFTER.plan = () => {
@@ -878,9 +873,6 @@ AFTER.plan = () => {
   const sel=document.querySelector('.day[aria-pressed="true"]'); sel&&sel.scrollIntoView({inline:"center",block:"nearest"});
   $("#addEvBtn").addEventListener("click",()=>openEventSheet());
   document.querySelectorAll("[data-delev]").forEach(b=>b.addEventListener("click",()=>{const it=S.plan.find(x=>x.id===b.dataset.delev); if(it){it.del=true;it.ts=now();save();render("plan");}}));
-  document.querySelectorAll(".flight input").forEach(inp=>inp.addEventListener("change",()=>{
-    const f=S.flights.find(x=>x.id===inp.closest(".flight").dataset.fid); f[inp.dataset.k]=inp.value; f.ts=now(); save(); renderHeader(); toast("Lagret");
-  }));
 };
 function openEventSheet(pref){
   pref = pref||{};
@@ -1398,7 +1390,7 @@ function practicalView(){
     <div class="list">${EMERGENCY.map(([k,v])=>`<div class="li"><span class="t">${esc(k)}</span><button type="button" class="btn ghost sm num" data-copy="${esc(v)}">${esc(v)}</button></div>`).join("")}</div>
     <p class="note" style="margin-top:8px">E-post til resorten: reservations@jawakara.com</p></section>
   <section class="card"><div class="card-h"><h2>Sjøflyet</h2></div>
-    <dl class="kv"><dt>Selskap</dt><dd>Trans Maldivian Airways (TMA)</dd><dt>Tid</dt><dd>35–40 min, 130 km</dd><dt>Pris</dt><dd class="num">USD 430 per person tur–retur (alle er 12+)</dd><dt>Bagasje</dt><dd>20 kg innsjekket + 5 kg håndbagasje per person. Maks 32 kg per kolli. Overvekt ca. USD 5 per kg.</dd><dt>Ankomst</dt><dd>Fly må lande i Malé kl. 06.00–15.45</dd><dt>Avreise</dt><dd>Hjemflyet må gå kl. 09.00 eller senere</dd><dt>Billett</dt><dd>Utstedes på flyplassen av resortens representant</dd><dt>Skranke</dt><dd>Crown & Champa, B9 i terminal 2. TMA i terminal 1 ved gate 4.</dd></dl>
+    <dl class="kv"><dt>Selskap</dt><dd>Trans Maldivian Airways (TMA)</dd><dt>Tid</dt><dd>35–40 min, 130 km</dd><dt>Pris</dt><dd class="num">USD 430 per person tur–retur (alle er 12+)</dd><dt>Bagasje</dt><dd>20 kg innsjekket + 5 kg håndbagasje per person, altså mindre enn flyene (23 + 8 kg). Maks 32 kg per kolli. Overvekt ca. USD 5 per kg.</dd><dt>Ankomst</dt><dd>Fly må lande i Malé kl. 06.00–15.45. LX 8066 lander 11.35.</dd><dt>Avreise</dt><dd>Hjemflyet må gå kl. 09.00 eller senere. LX 8067 går 13.20.</dd><dt>Billett</dt><dd>Utstedes på flyplassen av resortens representant</dd><dt>Skranke</dt><dd>Crown & Champa, B9 i terminal 2. TMA i terminal 1 ved gate 4.</dd></dl>
     <p class="note" style="margin-top:8px">Sjøflyet flyr bare i dagslys og kan bli forsinket av vær. Må det bookes om etter forsinket fly, koster det USD 215 per person. Sørg for reiseforsikring.</p></section>
   <section class="card"><div class="card-h"><h2>Innreise</h2></div>
     <ul style="margin:0;padding-left:18px" class="stack"><li>Pass gyldig i minst 6 måneder etter ankomst.</li><li>IMUGA reiseerklæring for alle, innen 96 timer før reisen.</li><li>Gratis turistvisum ved ankomst med bekreftet hotell.</li><li>Ikke ta med alkohol, svinekjøtt eller religiøse gjenstander i bagasjen inn i landet.</li><li>Drone krever tillatelse. Spør resorten først.</li></ul></section>`;
