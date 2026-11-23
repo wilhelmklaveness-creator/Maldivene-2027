@@ -1,0 +1,1280 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px)}[hidden]{display:none!important}img{max-width:100%}</style>
+<title>Jawakara 2027</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Familiens reiseapp til Jawakara Islands Maldives, februar 2027">
+<meta name="theme-color" content="#0a6c86">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Jawakara">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,800&display=swap">
+<style>
+/* Layout: lagunebånd øverst, kort på sand, fast fanerad nederst (tommelvennlig). */
+:root{
+  --sea:#0a6c86;        /* dyp lagune */
+  --lagoon:#25c2c0;     /* turkis */
+  --coral:#ff6b5b;      /* korall */
+  --coral-soft:#ffe3dc;
+  --palm:#21805a;       /* palmeblad */
+  --sun:#ffb938;
+  --sand:#fbf5ea;       /* sandbakgrunn */
+  --card:#ffffff;
+  --ink:#0d2c3b;
+  --muted:#5b7380;
+  --line:#e6ddcc;
+  --chip:#eef7f6;
+  --good:#1f8a5b; --warn:#c77700; --bad:#c2412f;
+  --hero-a:#0a6c86; --hero-b:#18a9b4; --hero-c:#7fe0d4;
+  --font-d:"Fredoka","Avenir Next","Trebuchet MS",system-ui,sans-serif;
+  --font-b:"Nunito Sans","Segoe UI",system-ui,-apple-system,sans-serif;
+  --r:18px;
+  --shadow:0 1px 2px rgba(13,44,59,.06),0 6px 18px rgba(13,44,59,.07);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --sea:#5fd3e0;--lagoon:#3fd8cf;--coral:#ff8a7c;--coral-soft:#4a2723;--palm:#53c08e;--sun:#ffc85e;
+  --sand:#06202b;--card:#0c2f3d;--ink:#e6f4f3;--muted:#93b2bb;--line:#1b4656;--chip:#123c4b;
+  --good:#5fd39b;--warn:#ffc45e;--bad:#ff8a7c;
+  --hero-a:#04394a;--hero-b:#085a6b;--hero-c:#0f7c80;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --sea:#5fd3e0;--lagoon:#3fd8cf;--coral:#ff8a7c;--coral-soft:#4a2723;--palm:#53c08e;--sun:#ffc85e;
+  --sand:#06202b;--card:#0c2f3d;--ink:#e6f4f3;--muted:#93b2bb;--line:#1b4656;--chip:#123c4b;
+  --good:#5fd39b;--warn:#ffc45e;--bad:#ff8a7c;
+  --hero-a:#04394a;--hero-b:#085a6b;--hero-c:#0f7c80;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25);color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--sand);color:var(--ink);font-family:var(--font-b);font-size:16px;line-height:1.5;margin:0;padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+h1,h2,h3{font-family:var(--font-d);font-weight:600;line-height:1.15;text-wrap:balance;margin:0}
+h2{font-size:1.35rem}
+h3{font-size:1.08rem}
+p{margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px;border-radius:8px}
+a{color:var(--sea)}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.num{font-variant-numeric:tabular-nums}
+
+/* Hero */
+.hero{position:relative;margin-top:calc(-1 * env(safe-area-inset-top,0px));padding-top:calc(env(safe-area-inset-top,0px) + 18px);background:linear-gradient(165deg,var(--hero-a) 0%,var(--hero-b) 55%,var(--hero-c) 100%);color:#fff;overflow:hidden}
+.hero .wrap{position:relative;z-index:2;padding-block:4px 54px}
+.hero-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-family:var(--font-d);font-weight:700;letter-spacing:.02em;font-size:1.05rem;opacity:.95}
+.brand small{display:block;font-family:var(--font-b);font-weight:600;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;opacity:.85}
+.me-btn{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:6px 12px 6px 6px;color:#fff;font-weight:700}
+.me-btn .av{width:30px;height:30px;font-size:18px}
+.hero h1{font-size:clamp(1.7rem,6vw,2.4rem);margin-top:18px}
+.hero .sub{opacity:.92;margin-top:4px}
+.palm{position:absolute;right:-18px;bottom:22px;width:170px;height:auto;z-index:1;opacity:.28;pointer-events:none}
+.waves{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:46px;z-index:1;display:block}
+.waves path{fill:var(--sand)}
+
+/* Countdown */
+.count{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.count div{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);border-radius:14px;padding:8px 12px;min-width:64px;text-align:center}
+.count b{display:block;font-family:var(--font-d);font-size:1.6rem;line-height:1;font-variant-numeric:tabular-nums}
+.count span{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;opacity:.9}
+
+/* Main */
+main{display:block;margin-top:-20px;position:relative;z-index:3}
+.view{display:grid;gap:16px;padding-block:4px 24px}
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;min-width:0}
+.card-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.eyebrow{font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)}
+.small{font-size:.86rem}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.stack{display:grid;gap:8px}
+.spacer{flex:1}
+
+/* Buttons & inputs */
+.btn{border:0;border-radius:12px;padding:10px 14px;font-weight:800;background:var(--sea);color:#fff;min-height:44px}
+:root .btn{color:var(--card)}
+.btn.ghost{background:var(--chip);color:var(--ink)}
+.btn.coral{background:var(--coral);color:#fff}
+.btn.sm{padding:6px 10px;min-height:34px;font-size:.86rem;border-radius:10px}
+.iconbtn{border:0;background:transparent;color:var(--muted);width:36px;height:36px;border-radius:10px;font-size:1.1rem;display:inline-grid;place-items:center}
+.iconbtn:hover{background:var(--chip)}
+input[type=text],input[type=number],input[type=date],input[type=time],input[type=datetime-local],select,textarea{width:100%;border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:10px 12px;min-height:44px;font-size:16px}
+input:focus,select:focus,textarea:focus{border-color:var(--lagoon);outline:none}
+label.f{display:grid;gap:4px;font-size:.82rem;font-weight:700;color:var(--muted);min-width:0}
+.addrow{display:flex;gap:8px}
+.addrow input{flex:1;min-width:0}
+
+/* Segmented sub-tabs */
+.seg{display:flex;gap:6px;overflow-x:auto;padding:4px;background:var(--card);border-radius:14px;box-shadow:var(--shadow);scrollbar-width:none}
+.seg::-webkit-scrollbar{display:none}
+.seg button{flex:0 0 auto;border:0;background:transparent;border-radius:10px;padding:8px 12px;font-weight:800;color:var(--muted);white-space:nowrap}
+.seg button[aria-selected=true]{background:var(--sea);color:var(--card)}
+
+/* Chips */
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:5px 11px;font-size:.84rem;font-weight:700;color:var(--muted)}
+.chip[aria-pressed=true]{background:var(--lagoon);border-color:var(--lagoon);color:#06303a}
+.pill{display:inline-block;border-radius:999px;padding:2px 9px;font-size:.74rem;font-weight:800;background:var(--chip);color:var(--ink);white-space:nowrap}
+.pill.coral{background:var(--coral-soft);color:var(--coral)}
+.pill.good{background:var(--chip);color:var(--good)}
+.pill.warn{background:var(--chip);color:var(--warn)}
+
+/* Avatars & leaderboard */
+.av{width:40px;height:40px;border-radius:50%;display:inline-grid;place-items:center;font-size:22px;background:var(--chip);flex:0 0 auto}
+.lb{display:grid;gap:10px}
+.lb-row{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}
+.lb-name{font-weight:800}
+.bar{height:8px;border-radius:99px;background:var(--chip);overflow:hidden;margin-top:4px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--lagoon),var(--sea));border-radius:99px}
+.lb-pts{font-family:var(--font-d);font-size:1.3rem;font-variant-numeric:tabular-nums}
+.lb-pts small{font-family:var(--font-b);font-size:.7rem;color:var(--muted);display:block;text-align:right}
+
+/* Lists */
+.list{display:grid;gap:2px}
+.li{display:flex;gap:10px;align-items:center;padding:8px 4px;border-bottom:1px solid var(--line);min-width:0}
+.li:last-child{border-bottom:0}
+.li .t{flex:1;min-width:0;overflow-wrap:anywhere}
+.li.done .t{text-decoration:line-through;color:var(--muted)}
+.check{appearance:none;-webkit-appearance:none;width:26px;height:26px;border-radius:8px;border:2px solid var(--lagoon);display:inline-grid;place-items:center;flex:0 0 auto;margin:0;background:var(--card)}
+.check:checked{background:var(--lagoon)}
+.check:checked::after{content:"";width:7px;height:12px;border:solid #06303a;border-width:0 3px 3px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.progress{height:10px;border-radius:99px;background:var(--chip);overflow:hidden}
+.progress i{display:block;height:100%;background:var(--palm)}
+
+/* Challenges */
+.ch{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.ch:last-child{border-bottom:0}
+.ch .t{font-weight:700}
+.ch .d{font-size:.84rem;color:var(--muted)}
+.ch-btn{border:2px solid var(--lagoon);background:transparent;border-radius:12px;padding:6px 10px;font-weight:800;color:var(--sea);min-width:78px;min-height:40px;font-variant-numeric:tabular-nums}
+.ch-btn[aria-pressed=true]{background:var(--lagoon);color:#06303a}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
+.badge{display:grid;justify-items:center;text-align:center;gap:4px;padding:10px 6px;border-radius:14px;background:var(--chip);font-size:.78rem;font-weight:700}
+.badge .ic{font-size:30px;line-height:1;filter:grayscale(1);opacity:.35}
+.badge.on .ic{filter:none;opacity:1}
+.badge.on{background:var(--coral-soft)}
+.badge small{font-weight:600;color:var(--muted);font-size:.7rem}
+
+/* Quiz */
+.q-opts{display:grid;gap:8px;margin-top:12px}
+.q-opt{text-align:left;border:2px solid var(--line);background:var(--card);border-radius:14px;padding:12px 14px;font-weight:700;min-height:48px}
+.q-opt.right{border-color:var(--good);background:var(--chip)}
+.q-opt.wrong{border-color:var(--bad);background:var(--coral-soft)}
+.q-ex{margin-top:12px;padding:12px;border-radius:12px;background:var(--chip);font-size:.92rem}
+
+/* Learn */
+.learn{display:grid;gap:10px}
+details.lc{background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:0}
+details.lc summary{list-style:none;cursor:pointer;padding:14px 16px;display:flex;gap:12px;align-items:center;font-weight:800}
+details.lc summary::-webkit-details-marker{display:none}
+details.lc summary .em{font-size:26px}
+details.lc summary .s2{display:block;font-weight:600;color:var(--muted);font-size:.82rem}
+details.lc .body{padding:0 16px 16px;display:grid;gap:8px}
+details.lc[open] summary{border-bottom:1px solid var(--line);margin-bottom:12px}
+.fish{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:start}
+.fish b{font-weight:800}
+.dv{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px}
+.dv .w{font-weight:800;color:var(--sea)}
+
+/* Plan / calendar */
+.days{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:thin}
+.day{flex:0 0 auto;border:2px solid var(--line);background:var(--card);border-radius:14px;padding:6px 10px;text-align:center;min-width:58px}
+.day b{display:block;font-family:var(--font-d);font-size:1.3rem;line-height:1.1;font-variant-numeric:tabular-nums}
+.day span{font-size:.72rem;font-weight:800;text-transform:uppercase;color:var(--muted)}
+.day[aria-pressed=true]{border-color:var(--sea);background:var(--sea);color:var(--card)}
+.day[aria-pressed=true] span{color:inherit;opacity:.85}
+.day.trip{border-color:var(--lagoon)}
+.ev{display:grid;grid-template-columns:62px 1fr auto;gap:10px;align-items:start;padding:10px 0;border-bottom:1px solid var(--line)}
+.ev:last-child{border-bottom:0}
+.ev .tm{font-family:var(--font-d);font-weight:600;color:var(--sea);font-variant-numeric:tabular-nums}
+.ev .tt{font-weight:800}
+.ev .dd{font-size:.84rem;color:var(--muted)}
+.ev.fixed .tt::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--coral);margin-right:6px;vertical-align:middle}
+.deadline{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;padding:8px 0;border-bottom:1px solid var(--line)}
+.deadline:last-child{border-bottom:0}
+.dl-date{font-family:var(--font-d);text-align:center;min-width:52px;border-radius:12px;background:var(--chip);padding:4px 6px;line-height:1.1}
+.dl-date b{display:block;font-size:1.2rem}
+.dl-date span{font-size:.7rem;text-transform:uppercase;font-weight:800;color:var(--muted)}
+.flight{display:grid;gap:8px;padding:12px;border:1.5px dashed var(--line);border-radius:14px}
+.flight .fh{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+/* Resort */
+.act{padding:12px 0;border-bottom:1px solid var(--line);display:grid;gap:4px}
+.act:last-child{border-bottom:0}
+.act .ah{display:flex;gap:8px;align-items:baseline;justify-content:space-between}
+.act .an{font-weight:800}
+.act .ad{font-size:.9rem;color:var(--muted)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:.92rem}
+.kv dt{color:var(--muted);font-weight:700}
+.kv dd{margin:0;font-weight:700;min-width:0;overflow-wrap:anywhere}
+.stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.stat div{background:var(--chip);border-radius:14px;padding:10px 12px}
+.stat b{display:block;font-family:var(--font-d);font-size:1.35rem;font-variant-numeric:tabular-nums}
+.stat span{font-size:.78rem;color:var(--muted);font-weight:700}
+
+/* Weather */
+.wx-now{display:flex;gap:14px;align-items:center}
+.wx-now .ic{font-size:52px;line-height:1}
+.wx-now .tp{font-family:var(--font-d);font-size:2.6rem;line-height:1;font-variant-numeric:tabular-nums}
+.wx-days{display:grid;grid-template-columns:repeat(7,minmax(60px,1fr));gap:6px;overflow-x:auto}
+.wx-d{text-align:center;background:var(--chip);border-radius:12px;padding:8px 4px;font-size:.8rem}
+.wx-d b{display:block;font-size:.72rem;text-transform:uppercase;color:var(--muted)}
+.wx-d .i{font-size:22px}
+.chartbox{overflow-x:auto}
+.chartbox svg{display:block;width:100%;min-width:320px;height:auto}
+.tides{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+
+/* Clocks / currency */
+.clocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.clock{background:var(--chip);border-radius:14px;padding:12px}
+.clock b{display:block;font-family:var(--font-d);font-size:2rem;line-height:1.1;font-variant-numeric:tabular-nums}
+.clock span{font-size:.8rem;font-weight:700;color:var(--muted)}
+.fx-out{display:grid;gap:6px;margin-top:10px}
+.fx-line{display:flex;justify-content:space-between;gap:10px;padding:8px 12px;background:var(--chip);border-radius:12px;font-variant-numeric:tabular-nums}
+.fx-line b{font-family:var(--font-d);font-size:1.15rem}
+
+.count .big-days{display:flex;align-items:baseline;gap:10px;background:rgba(255,255,255,.18);padding:10px 16px}
+.count .big-days b{font-size:clamp(3rem,14vw,4.6rem)}
+.count .big-days span{font-size:.9rem;letter-spacing:.1em}
+.count .hm{background:none;border:0;text-align:left;align-self:center;font-size:.9rem;opacity:.95;min-width:0}
+/* Weather scene */
+.scene{position:relative;border-radius:16px;overflow:hidden;margin:-4px -4px 0}
+.scene svg{display:block;width:100%;height:auto}
+.scene .ov{position:absolute;left:16px;top:12px;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.25)}
+.scene .ov .tp{font-family:var(--font-d);font-size:3.4rem;line-height:1;font-variant-numeric:tabular-nums}
+.scene .ov .tx{font-weight:800}
+.wx-facts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.wx-facts div{background:var(--chip);border-radius:12px;padding:8px;text-align:center}
+.wx-facts b{display:block;font-family:var(--font-d);font-size:1.1rem;font-variant-numeric:tabular-nums}
+.wx-facts span{font-size:.72rem;color:var(--muted);font-weight:700}
+@media (max-width:420px){.wx-facts{grid-template-columns:repeat(2,1fr)}}
+.spin{transform-origin:center;transform-box:fill-box;animation:spin 40s linear infinite}
+.drift{animation:drift 26s ease-in-out infinite alternate}
+.drift2{animation:drift 34s ease-in-out infinite alternate-reverse}
+.wave1{animation:wave 7s ease-in-out infinite alternate}
+.wave2{animation:wave 9s ease-in-out infinite alternate-reverse}
+.drop{animation:drop 1.1s linear infinite}
+.sway{transform-origin:50% 100%;transform-box:fill-box;animation:sway 6s ease-in-out infinite alternate}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes drift{from{transform:translateX(-30px)}to{transform:translateX(40px)}}
+@keyframes wave{from{transform:translateX(-24px)}to{transform:translateX(24px)}}
+@keyframes drop{from{transform:translateY(-20px);opacity:0}30%{opacity:1}to{transform:translateY(60px);opacity:0}}
+@keyframes sway{from{transform:rotate(-2deg)}to{transform:rotate(2.5deg)}}
+@media (prefers-reduced-motion:reduce){.spin,.drift,.drift2,.wave1,.wave2,.drop,.sway{animation:none}}
+/* Tab bar */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+.tabbar nav{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+.tabbar a{display:grid;justify-items:center;gap:2px;padding:8px 2px 8px;text-decoration:none;color:var(--muted);font-size:.72rem;font-weight:800}
+.tabbar a svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tabbar a[aria-current=page]{color:var(--sea)}
+.tabbar a[aria-current=page] svg{stroke:var(--coral)}
+
+/* Sheet / dialog */
+.sheet-bg{position:fixed;inset:0;background:rgba(4,24,32,.5);z-index:40;display:grid;align-items:end}
+.sheet{background:var(--sand);border-radius:22px 22px 0 0;max-height:88vh;overflow:auto;padding:18px max(16px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));width:100%;max-width:760px;margin:0 auto;display:grid;gap:14px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--sand);padding:10px 16px;border-radius:999px;font-weight:800;z-index:50;box-shadow:var(--shadow);max-width:calc(100% - 32px);text-align:center}
+.burst{animation:pop .5s ease}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.15)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.burst{animation:none}}
+.empty{padding:14px;border-radius:12px;background:var(--chip);color:var(--muted);font-size:.9rem}
+.note{font-size:.84rem;color:var(--muted)}
+textarea{min-height:90px;resize:vertical}
+@media (max-width:420px){.fgrid{grid-template-columns:1fr}.dv{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+
+<header class="hero">
+  <svg class="palm" viewBox="0 0 200 260" aria-hidden="true"><g fill="#fff"><path d="M104 255c-4-60 2-120 18-170l8 3c-15 50-20 108-17 167z"/><path d="M126 86c-22-30-62-40-100-26 30-2 58 8 78 30z"/><path d="M126 86c-6-36-36-64-74-70 26 14 46 40 56 72z"/><path d="M126 86c14-34 46-54 82-52-30 8-56 30-70 58z"/><path d="M126 86c30-16 64-12 74 8-24-10-50-6-70 6z"/><path d="M126 86c-30-8-62 6-80 34 22-18 50-26 76-20z"/><circle cx="122" cy="94" r="6"/><circle cx="132" cy="96" r="5"/></g></svg>
+  <div class="wrap">
+    <div class="hero-top">
+      <div class="brand">Jawakara 2027<small>Lhaviyani-atollen · Maldivene</small></div>
+      <button class="me-btn" id="meBtn" type="button" aria-label="Bytt profil"><span class="av" id="meAv">🐢</span><span id="meName">Velg</span></button>
+    </div>
+    <h1 id="heroTitle">Snart sjøfly og korallrev</h1>
+    <p class="sub" id="heroSub">21.–27. februar 2027 · 6 netter</p>
+    <div class="count" id="count" aria-live="polite"></div>
+  </div>
+  <svg class="waves" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40c120 22 240 30 360 18S600 14 720 22s240 38 360 36 240-26 360-30v52H0z"/></svg>
+</header>
+
+<main class="wrap" id="main"></main>
+
+<div class="tabbar"><nav id="tabs" aria-label="Hovedmeny">
+  <a href="#hjem" data-tab="hjem"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Hjem</a>
+  <a href="#plan" data-tab="plan"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Plan</a>
+  <a href="#moro" data-tab="moro"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg>Moro</a>
+  <a href="#resort" data-tab="resort"><svg viewBox="0 0 24 24"><path d="M12 21V10"/><path d="M12 10C9 6 5 6 3 8c3-.5 6 .5 9 2z"/><path d="M12 10c3-4 7-4 9-2-3-.5-6 .5-9 2z"/><path d="M12 10c-1-4 1-7 4-7-2 2-3 4-4 7z"/><path d="M3 21h18"/></svg>Resort</a>
+  <a href="#mer" data-tab="mer"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="17" rx="3"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>Lister og mer</a>
+</nav></div>
+
+<script>
+"use strict";
+/* ================= DATA ================= */
+const TRIP = {
+  checkin: "2027-02-21", checkout: "2027-02-27",
+  lat: 5.42, lon: 73.50,
+  islandOffset: 6,   // Jawakaras øytid, GMT+6
+  mvOffset: 5        // Maldivisk tid (Malé), GMT+5
+};
+const DEFAULT_PROFILES = [
+  {id:"p1", name:"Mamma", emoji:"🐢"},
+  {id:"p2", name:"Pappa", emoji:"🦈"},
+  {id:"p3", name:"Sønn (17)", emoji:"🐬"},
+  {id:"p4", name:"Datter (14)", emoji:"🐠"}
+];
+const EMOJIS = ["🐢","🦈","🐬","🐠","🐙","🦀","🐳","🌴","🥥","🐚","🦩","🌺","☀️","🏄","🤿","🦜"];
+
+const CH_CATS = ["Artsjakt","Eventyr","Kultur","Familie","Før reisen"];
+const CHALLENGES = [
+  ["skilpadde","Se en havskilpadde","Karett- og grønn havskilpadde er vanlige på husrevet. Hold minst 2 meter avstand.",30,"Artsjakt"],
+  ["revhai","Se en svartfinnet revhai","Ufarlige og sky. Ungene svømmer ofte i grunt vann ved stranden.",30,"Artsjakt"],
+  ["manta","Se en mantarokke","Kan ha vingespenn på over 3 meter. Ofte på egne mantaturer.",50,"Artsjakt"],
+  ["delfin","Se delfiner","Spinnerdelfiner hopper og snurrer i luften, gjerne ved solnedgang.",30,"Artsjakt"],
+  ["napoleon","Se en napoleonfisk","Stor, blågrønn leppefisk med pukkel i panna.",30,"Artsjakt"],
+  ["blekksprut","Finn en blekksprut","Mestere i kamuflasje. Se etter øyne i sprekker på revet.",40,"Artsjakt"],
+  ["murene","Se en murene","Stikker hodet ut av hull og åpner og lukker munnen for å puste.",20,"Artsjakt"],
+  ["rokke","Se en rokke i lagunen","Ligger ofte nedgravd i sanden. Gå med «subbetrinn» i grunt vann.",20,"Artsjakt"],
+  ["klovnefisk","Finn en klovnefisk i en anemone","Maldivenes egen art er oransje med to hvite striper.",15,"Artsjakt"],
+  ["papegoye","Se en papegøyefisk gnage på korall","Lytt etter knasingen. Mye av den hvite sanden har gått gjennom en papegøyefisk.",15,"Artsjakt"],
+  ["eremitt","Finn en eremittkreps på stranden","De bor i lånte skjell og bytter når de vokser.",10,"Artsjakt"],
+  ["flyvehund","Se flygende hunder i skumringen","Store fruktflaggermus som flyr ut av palmene ved solnedgang.",15,"Artsjakt"],
+  ["hegre","Se en hegre som fisker i strandkanten","Grå hegre står helt stille og venter på småfisk.",10,"Artsjakt"],
+  ["husrev","Snorkle på husrevet","Jawakara House Reef ligger under brua mellom øyene.",15,"Eventyr"],
+  ["morgensnorkel","Snorkle før frokost","Fiskene er ekstra aktive tidlig om morgenen.",20,"Eventyr"],
+  ["kajakk","Padle kajakk eller SUP","Prøv glasskajakken og se revet fra over vannet.",15,"Eventyr"],
+  ["brua","Gå hele brua mellom Mabin og Dheru","650 meter over husrevet. Se ned etter fisk.",10,"Eventyr"],
+  ["sykkel","Sykle rundt hele Mabin","Øya er ca. 1,4 km lang.",15,"Eventyr"],
+  ["sandbanke","Besøk en sandbanke eller ubebodd øy","Robinson Crusoe-tur finnes som utflukt.",25,"Eventyr"],
+  ["dykk","Prøv dykking","Discover Scuba med Prodivers. Ingen sertifikat trengs.",40,"Eventyr"],
+  ["selfie","Ta en undervannsselfie","Gjerne med en fisk i bakgrunnen.",15,"Eventyr"],
+  ["solnedgang","Fotografer solnedgangen fra en brygge","Sola går ned rundt kl. 19.15 øytid.",10,"Eventyr"],
+  ["sorkorset","Finn Sørkorset på nattehimmelen","Lavt i sør tidlig om morgenen. Ikke synlig fra Norge!",20,"Eventyr"],
+  ["padel","Vinn en kamp i padel, tennis eller pickleball","Resorten har baner for alle tre.",15,"Eventyr"],
+  ["golf","Slå 20 baller på driving range","Jawakara har egen golfbane.",10,"Eventyr"],
+  ["shukuriyaa","Si «shukuriyaa» til personalet","Det betyr takk på dhivehi.",10,"Kultur"],
+  ["dhivehi5","Lær 5 ord på dhivehi og bruk dem","Se ordlisten under Lær.",20,"Kultur"],
+  ["mashuni","Smak mas huni","Maldivisk frokost: tunfisk, kokos, løk og chili.",15,"Kultur"],
+  ["frukt","Smak en frukt du aldri har spist","Prøv for eksempel brødfrukt, papaya eller rambutan.",10,"Kultur"],
+  ["boduberu","Se eller spill bodu beru","Tradisjonell tromming. Resorten har show og trommekurs for ungdom.",20,"Kultur"],
+  ["lokaloy","Besøk en lokal øy","Husk skuldre og knær dekket på lokale øyer.",25,"Kultur"],
+  ["thaana","Skriv navnet ditt med thaana-skrift","Thaana skrives fra høyre mot venstre.",15,"Kultur"],
+  ["quizvinner","Vinn familiequizen","Den som har flest riktige under Quiz.",25,"Familie"],
+  ["skjermfri","Tre timer helt uten mobil","Ja, også denne appen.",20,"Familie"],
+  ["familiebilde","Ta et familiebilde i vannkanten","Alle fire må være med.",10,"Familie"],
+  ["spill","Spill et brett- eller kortspill sammen","Spillrommet har biljard, airhockey og brettspill.",10,"Familie"],
+  ["soloppgang","Se soloppgangen","Rundt kl. 07.20 øytid.",20,"Familie"],
+  ["pakket","Pakk ferdig kofferten din","Huk av alt på pakkelisten din.",15,"Før reisen"],
+  ["kart","Finn Lhaviyani-atollen på kartet","Vis resten av familien hvor vi skal.",10,"Før reisen"],
+  ["fakta3","Lær deg tre fakta om Maldivene","Les kortene under Lær.",10,"Før reisen"]
+].map(([id,t,d,p,c])=>({id,t,d,p,c}));
+
+const BADGES = [
+  {id:"rev",   ic:"🐠", n:"Revutforsker", how:"Fullfør 5 i artsjakten", test:(s)=>s.catCount("Artsjakt")>=5},
+  {id:"big5",  ic:"🏅", n:"Havets store fem", how:"Skilpadde, revhai, manta, delfin og napoleonfisk", test:(s)=>["skilpadde","revhai","manta","delfin","napoleon"].every(s.has)},
+  {id:"quiz",  ic:"🧠", n:"Quizmester", how:"20 riktige quizsvar", test:(s)=>s.quizRight>=20},
+  {id:"spraak",ic:"🗣️", n:"Dhivehi-talent", how:"Si takk og lær 5 ord", test:(s)=>s.has("shukuriyaa")&&s.has("dhivehi5")},
+  {id:"eventyr",ic:"🧭", n:"Eventyrer", how:"Fullfør 6 eventyr", test:(s)=>s.catCount("Eventyr")>=6},
+  {id:"kultur",ic:"🥁", n:"Kulturkjenner", how:"Fullfør 4 kulturoppgaver", test:(s)=>s.catCount("Kultur")>=4},
+  {id:"tidlig",ic:"🌅", n:"Morgenfugl", how:"Soloppgang og morgensnorkel", test:(s)=>s.has("soloppgang")&&s.has("morgensnorkel")},
+  {id:"pakk",  ic:"🧳", n:"Pakkeproff", how:"Alt huket av på egen pakkeliste", test:(s)=>s.packDone},
+  {id:"dyp",   ic:"🤿", n:"Dypdykker", how:"Prøv dykking og snorkle på husrevet", test:(s)=>s.has("dykk")&&s.has("husrev")},
+  {id:"300",   ic:"🌟", n:"Poengsluker", how:"Samle 300 poeng", test:(s)=>s.points>=300}
+];
+
+const QUIZ = [
+  ["Omtrent hvor mange øyer består Maldivene av?",["Rundt 200","Rundt 1 200","Rundt 5 000","Rundt 12 000"],1,"Maldivene har rundt 1 190 koralløyer, fordelt på 26 naturlige atoller."],
+  ["Hva heter hovedstaden?",["Malé","Colombo","Addu","Hulhumalé"],0,"Malé er en av verdens tettest befolkede byer."],
+  ["Hvilket språk snakkes på Maldivene?",["Hindi","Tamil","Dhivehi","Malayisk"],2,"Dhivehi skrives med thaana-skrift, fra høyre mot venstre."],
+  ["Hva betyr «shukuriyaa»?",["Hei","Takk","God natt","Unnskyld"],1,"Shukuriyaa betyr takk."],
+  ["Hva heter valutaen?",["Rupi","Rufiyaa","Dinar","Baht"],1,"Rufiyaa (MVR). 1 rufiyaa er 100 laari. Resorten tar dollar og kort."],
+  ["Omtrent hvor høyt over havet ligger landet i snitt?",["1,5 meter","15 meter","50 meter","150 meter"],0,"Maldivene er verdens laveste land. Høyeste naturlige punkt er bare rundt 2,4 meter."],
+  ["Ordet «atoll» kommer fra …",["Latin","Dhivehi","Engelsk","Arabisk"],1,"Det kommer fra dhivehi-ordet «atholhu»."],
+  ["Hvilken atoll ligger Jawakara i?",["Ari","Baa","Lhaviyani","Addu"],2,"Lhaviyani-atollen, rundt 35–40 minutter med sjøfly fra Malé."],
+  ["Hvor lang er brua mellom Mabin og Dheru?",["65 meter","650 meter","1,6 km","6,5 km"],1,"Brua er 650 meter og går over husrevet."],
+  ["Hvor mange timer er Jawakaras øytid foran Norge i februar?",["2","4","5","7"],2,"Norge er GMT+1 om vinteren. Jawakara bruker øytid GMT+6, altså 5 timer foran."],
+  ["Hva lager papegøyefisken?",["Perler","Hvit sand","Blekk","Bobler"],1,"Den gnager på døde koraller og skiter ut fin hvit sand. En stor fisk kan lage hundrevis av kilo i året."],
+  ["Hva er koraller?",["Steiner","Planter","Dyr","Sopp"],2,"Koraller er små dyr (polypper) som lever i samarbeid med alger som gir dem farge og næring."],
+  ["Hva skjer når koraller «blekes»?",["De vokser raskere","De mister algene sine","De blir giftige","De legger egg"],1,"I for varmt vann kaster korallene ut algene sine og blir hvite. Varer det lenge, dør de."],
+  ["Hvorfor skal man bruke revvennlig solkrem?",["Den lukter bedre","Noen stoffer skader koraller","Den er billigere","Den er vanntett"],1,"Stoffer som oksybenzon kan skade koraller. Velg mineralbasert solkrem og UV-trøye."],
+  ["Hvilken fisk er kjent for å forsvare reiret sitt aggressivt?",["Klovnefisk","Titanavtrekkerfisk","Papegøyefisk","Kirurgfisk"],1,"Titanavtrekkerfisken kan bite. Svøm vekk horisontalt, ikke opp, hvis den kommer mot deg."],
+  ["Hva er nasjonalretten mas huni laget av?",["Tunfisk, kokos, løk og chili","Ris og kylling","Reker og nudler","Lam og poteter"],0,"Den spises gjerne til frokost med roshi, et tynt flatbrød."],
+  ["Hvilket tre er Maldivenes nasjonaltre?",["Banantre","Kokospalme","Mangrove","Bambus"],1,"Kokospalmen brukes til mat, tak, tau og båter."],
+  ["Hvilket år ble Maldivene uavhengig fra Storbritannia?",["1905","1945","1965","1990"],2,"26. juli 1965. Den dagen er nasjonaldag."],
+  ["Hva var spesielt med regjeringsmøtet i 2009?",["Det var på en båt","Det var under vann","Det var på månen","Det varte i 3 dager"],1,"Ministrene dykket for å vise hvordan havstigning truer landet."],
+  ["Hvilket sjøflyselskap flyr gjestene til Jawakara?",["Maldivian","Trans Maldivian Airways","Emirates","Widerøe"],1,"TMA har en av verdens største flåter av sjøfly."],
+  ["Hvor mye bagasje kan hver person ha med på sjøflyet?",["10 kg + 2 kg","20 kg + 5 kg","23 kg + 8 kg","32 kg + 10 kg"],1,"20 kg innsjekket og 5 kg håndbagasje. Overvekt koster rundt 5 dollar per kg."],
+  ["Hvilket monsunvær er det i februar?",["Våt sørvestmonsun","Tørr nordøstmonsun","Orkansesong","Snø"],1,"Nordøstmonsunen (iruvai) gir tørt og solrikt vær fra desember til april."],
+  ["Omtrent hvor varmt er havet i februar?",["18 °C","22 °C","28 °C","35 °C"],2,"Rundt 28 °C. Perfekt for lange snorkleturer."],
+  ["Hva heter de tradisjonelle maldiviske trommene?",["Bodu beru","Djembe","Tabla","Taiko"],0,"«Bodu beru» betyr stor tromme. Rytmen starter rolig og blir vill."],
+  ["Hvilken stjernekonstellasjon kan du se fra Maldivene, men ikke fra Norge?",["Karlsvogna","Orion","Sørkorset","Kassiopeia"],2,"Maldivene ligger nær ekvator, så sørhimmelen er synlig."],
+  ["Hvilken side av ekvator ligger Jawakara på?",["Nord","Sør","Rett på","Begge"],0,"Rundt 5 grader nord for ekvator."],
+  ["Hvorfor kan man ikke ha med hund til Maldivene?",["For varmt","Hunder er forbudt","De svømmer bort","De skremmer fisk"],1,"Hunder er ikke tillatt som kjæledyr, bortsett fra politihunder."],
+  ["Hva gjør man med en revhai som svømmer forbi?",["Mater den","Jager den","Ser rolig på","Rører den"],2,"Svartfinnet revhai er sky og ufarlig. Hold avstand og nyt synet."],
+  ["Hva er flygende hunder?",["Fisker","Store flaggermus","Fugler","Øgler"],1,"Fruktflaggermus med vingespenn på over én meter. Se etter dem i skumringen."],
+  ["Hva må alle reisende fylle ut på nett før de reiser til Maldivene?",["Visum-søknad","IMUGA reiseerklæring","Vaksinekort","Ingenting"],1,"IMUGA-skjemaet fylles ut innen 96 timer før reisen."],
+  ["Hvorfor er brødfrukt kjent?",["Smaker som brød når den stekes","Den er blå","Den vokser under vann","Den lyser"],0,"Brødfrukt kan kokes, stekes eller lages chips av."],
+  ["Hvilke dager er helg på Maldivene?",["Lørdag–søndag","Fredag–lørdag","Torsdag–fredag","Søndag–mandag"],1,"Fredag er bønnedag i det muslimske landet. Resortene holder åpent som vanlig."]
+].map(([q,o,a,e],i)=>({id:"q"+i,q,o,a,e}));
+
+const LEARN = [
+  {em:"🗺️",t:"Geografi",s:"Øyer, atoller og havnivå",body:`
+    <p>Maldivene er en kjede av rundt 1 190 koralløyer i Indiahavet, sørvest for India og Sri Lanka. Øyene ligger i 26 naturlige <b>atoller</b>, ringformede rev rundt en lagune.</p>
+    <p>Jawakara ligger i <b>Lhaviyani-atollen</b>, ca. 130 km nord for Malé. Resorten består av to øyer, <b>Mabin</b> (ca. 1 400 × 300 m) og <b>Dheru</b> (ca. 450 × 150 m), bundet sammen av en 650 meter lang bru over husrevet.</p>
+    <p>Landet ligger i snitt bare 1,5 meter over havet. Derfor er havstigning en av de største truslene mot Maldivene.</p>`},
+  {em:"🪸",t:"Korallrevet",s:"Hvordan et rev fungerer",body:`
+    <p>Et korallrev er bygget av millioner av små dyr, <b>polypper</b>, som lager kalkskjelett. Inne i polyppene bor alger som lager mat fra sollys og gir korallene farger.</p>
+    <p>Når havet blir for varmt, kaster korallene ut algene og blir hvite. Det kalles <b>bleking</b>. Maldivene har hatt store blekinger i 1998, 2016 og 2024, men mange rev kommer seg igjen.</p>
+    <p><b>Slik passer du på revet:</b> Ikke stå eller tråkk på koraller, ikke ta med skjell eller korall hjem, bruk revvennlig solkrem eller UV-trøye, og ikke mat fisken.</p>`},
+  {em:"🐟",t:"Fisk og dyr du kan møte",s:"Artsjakt-guide",body:`
+    <div class="fish">
+      <span>🐢</span><p><b>Havskilpadde.</b> Karett og grønn havskilpadde. Jawakara har et eget institutt for skilpaddehelse.</p>
+      <span>🦈</span><p><b>Svartfinnet revhai.</b> 1–1,5 meter, sky og ufarlig. Svart tupp på finnene.</p>
+      <span>🦅</span><p><b>Mantarokke og ørneskate.</b> Glir gjennom vannet som fugler.</p>
+      <span>🐠</span><p><b>Klovnefisk.</b> Bor i anemoner og tåler giften deres.</p>
+      <span>🦜</span><p><b>Papegøyefisk.</b> Nebb som en papegøye. Lager sand.</p>
+      <span>🐍</span><p><b>Murene.</b> Ser skummel ut, men er fredelig hvis du holder fingrene unna.</p>
+      <span>🐡</span><p><b>Titanavtrekkerfisk.</b> Kan forsvare reiret sitt. Svøm vekk sidelengs.</p>
+      <span>🦁</span><p><b>Dragefisk.</b> Vakre, men giftige pigger. Ikke rør.</p>
+      <span>🪨</span><p><b>Steinfisk.</b> Ligner en stein og er svært giftig. Bruk revsko i lagunen.</p>
+      <span>🐬</span><p><b>Spinnerdelfin.</b> Hopper og snurrer. Ses ofte på solnedgangsturer.</p>
+    </div>`},
+  {em:"🗣️",t:"Dhivehi-ordbok",s:"Ti ord som gjør inntrykk",body:`
+    <div class="dv">
+      <span class="w">Assalaamu alaikum</span><span>Hei (fred være med deg)</span>
+      <span class="w">Kihineh?</span><span>Hvordan går det?</span>
+      <span class="w">Barabaru</span><span>Bra</span>
+      <span class="w">Shukuriyaa</span><span>Takk</span>
+      <span class="w">Aan</span><span>Ja</span>
+      <span class="w">Noon</span><span>Nei</span>
+      <span class="w">Varah reethi</span><span>Veldig vakkert</span>
+      <span class="w">Mas</span><span>Fisk</span>
+      <span class="w">Rah</span><span>Øy</span>
+      <span class="w">Dhanee</span><span>Ha det (jeg går nå)</span>
+    </div>
+    <p class="note">Thaana-skriften skrives fra høyre mot venstre og har 24 bokstaver.</p>`},
+  {em:"🕌",t:"Kultur og skikker",s:"Religion, mat og musikk",body:`
+    <p>Maldivene er et muslimsk land. På resorten er alt som hjemme, men på <b>lokale øyer</b> bør skuldre og knær være dekket, og alkohol er ikke tillatt der.</p>
+    <p>Helgen er <b>fredag og lørdag</b>. Nasjonalretten er <b>mas huni</b>, revet tunfisk med kokos, løk og chili, spist med flatbrødet roshi.</p>
+    <p><b>Bodu beru</b> er tradisjonell tromming og dans. Landet ble uavhengig fra Storbritannia i 1965.</p>`},
+  {em:"☀️",t:"Klima i februar",s:"Tørrsesong og sterk sol",body:`
+    <p>Februar er midt i den tørre <b>nordøstmonsunen</b>. Normalt er det rundt 30 °C om dagen, 26 °C om natten og 28 °C i havet. Det kan komme korte regnbyger.</p>
+    <p>UV-indeksen er ofte 11 eller høyere, altså ekstrem. Bruk solkrem, caps og UV-trøye, også når det er overskyet.</p>
+    <p>Fordi øya ligger nær ekvator, er dagene omtrent like lange hele året. Det blir mørkt fort etter solnedgang.</p>`},
+  {em:"🌊",t:"Tidevann",s:"Flo og fjære i lagunen",body:`
+    <p>Månen og sola drar i havet. På Maldivene kommer det <b>to flo og to fjære hvert døgn</b>, med rundt 6 timer mellom.</p>
+    <p>Forskjellen er under én meter, men det betyr mye i en grunn lagune. På fjære kan det være for grunt å snorkle over revkanten, og strømmen i kanalene (kandu) kan bli sterk når tidevannet snur.</p>
+    <p>Se fanen Vær og hav for tidevannet de neste dagene.</p>`},
+  {em:"🛟",t:"Trygt i vannet",s:"Regler for snorkling",body:`
+    <p>Snorkle alltid <b>to og to</b>, og si fra til noen før dere går ut. Sjekk strømmen før dere svømmer langs revkanten.</p>
+    <p>Bruk revsko i lagunen, ikke rør noe, og hold deg flytende over koraller. Ta pauser i skyggen og drikk mye vann.</p>
+    <p>Ved stikk fra steinfisk eller dragefisk: legg foten i så varmt vann som tåles og kontakt legen på Mabin.</p>`}
+];
+
+/* Resortens tilbud fra jawakara.com (lest 23.11.2026). Priser og tider står i bookingportalen deres. */
+const RESORT = [
+  // Mat og drikke
+  {c:"Mat og drikke",n:"Aila",d:"Buffet til frokost, lunsj og middag med kokker som lager mat foran deg. Internasjonalt. Nordenden av Mabin."},
+  {c:"Mat og drikke",n:"Saima",d:"Buffet til frokost, lunsj og middag med livematlaging. Internasjonalt. Sørenden av Mabin."},
+  {c:"Mat og drikke",n:"Vela",d:"Buffet til alle måltider, inne og ute, med livestasjoner. Dheru."},
+  {c:"Mat og drikke",n:"Molo",d:"À la carte, middelhavsmat. Barnemeny. Mabin."},
+  {c:"Mat og drikke",n:"Umi 海",d:"À la carte, asiatisk-pasifisk fusjon, på brua mellom øyene. Godt vinutvalg. Dheru."},
+  {c:"Mat og drikke",n:"Hideout",d:"Burgere, sandwicher, salater og vegetarretter ved golfbanen med jungelutsikt. Mabin."},
+  {c:"Mat og drikke",n:"Nika Bar, Bonthi Bar og Molo Bar",d:"Barene på Mabin. Molo Bar har terrasse over lagunen."},
+  {c:"Mat og drikke",n:"Fore Bar",d:"Baren på golfbanen. Mabin."},
+  {c:"Mat og drikke",n:"Umi 海 Bar og Thila Bar",d:"Barene på Dheru, med utsikt over husrevet og havet."},
+  {c:"Mat og drikke",n:"Grillfest på stranden",d:"«Destination dining» med strandgrill. Bestilles."},
+  // Snorkling og dykking
+  {c:"Snorkling",n:"Husrevet",d:"Jawakara House Reef med rikt fiskeliv, rett fra stranden og under brua."},
+  {c:"Snorkling",n:"Nybegynnerkurs i snorkling",d:"Kort opplæring for de som er usikre."},
+  {c:"Snorkling",n:"Båttur til husrevet",d:"Faste båtturer, to ganger daglig for gjester med all inclusive. Forhåndsbestilles."},
+  {c:"Snorkling",n:"Snorkletur til andre rev",d:"Båtturer til rev i Lhaviyani-atollen."},
+  {c:"Dykking",n:"Discover Scuba Diving",d:"Prøvedykk med instruktør. Ikke et kurs, gir ikke sertifikat. Passer for alle i familien.",age:"Fra 10 år"},
+  {c:"Dykking",n:"PADI Open Water og videre kurs",d:"Prodivers er et PADI 5-stjerners senter med kurs og spesialiteter."},
+  {c:"Dykking",n:"Fun dives",d:"Guidede dykk på over 50 dykkesteder i Lhaviyani for sertifiserte dykkere."},
+  {c:"Dykking",n:"Bubblemaker",d:"Første pust under vann for de minste.",age:"8–9 år"},
+  // Vannsport
+  {c:"Vannsport",n:"Kajakk og glasskajakk",d:"Padle over lagunen. Glasskajakken har gjennomsiktig bunn."},
+  {c:"Vannsport",n:"Stand up paddle (SUP)",d:"Brett for rolig padling i lagunen."},
+  {c:"Vannsport",n:"Windsurfing",d:"Med kurs for nybegynnere."},
+  {c:"Vannsport",n:"Katamaranseiling",d:"Seil selv eller med instruktør."},
+  {c:"Vannsport",n:"Vannjet (jetski)",d:"Fart over lagunen."},
+  {c:"Vannsport",n:"Vannski og wakeboard",d:"Trekkes etter båt."},
+  {c:"Vannsport",n:"Fun tube",d:"Badering etter speedbåt. Populært blant ungdom."},
+  // Utflukter
+  {c:"Utflukter",n:"Delfinsafari ved solnedgang",d:"Båttur for å se spinnerdelfiner."},
+  {c:"Utflukter",n:"Mantasøk",d:"Speedbåttur på jakt etter mantarokker."},
+  {c:"Utflukter",n:"Turtle lovers",d:"Snorkletur der det er mye skilpadder."},
+  {c:"Utflukter",n:"Privat sandbanke (Robinson Crusoe)",d:"Dere blir satt av på en øde sandbanke."},
+  {c:"Utflukter",n:"Besøk på lokal øy",d:"Se hvordan maldivere bor. Dekk skuldre og knær."},
+  {c:"Utflukter",n:"Solnedgangscruise",d:"Rolig båttur når sola går ned."},
+  {c:"Utflukter",n:"Fisketur ved solnedgang",d:"Tradisjonelt snørefiske fra båt."},
+  {c:"Utflukter",n:"Piknik på ubebodd øy",d:"En del av ungdomsprogrammet."},
+  // Spa
+  {c:"Spa og velvære",n:"Sulha Spa",d:"To spa, ett av dem over lagunen på Dheru. Ayurveda-inspirerte massasjer med økologiske produkter."},
+  {c:"Spa og velvære",n:"Akupunktur og urtemedisin",d:"Behandlinger ved Sulha Spa."},
+  {c:"Spa og velvære",n:"Yoga og meditasjon",d:"Gruppeyoga og meditasjon."},
+  {c:"Spa og velvære",n:"Salong",d:"Hår og negler."},
+  // Sport
+  {c:"Sport og spill",n:"Golfbane og driving range",d:"Egen golfbane på Mabin, med golfakademi for ungdom."},
+  {c:"Sport og spill",n:"Tennis, padel og pickleball",d:"Baner på Mabin."},
+  {c:"Sport og spill",n:"Badminton og fotball",d:"Inkludert futsalbane."},
+  {c:"Sport og spill",n:"Treningssenter",d:"Fullt utstyrt gym."},
+  {c:"Sport og spill",n:"Infinitybasseng",d:"To ferskvannsbasseng ut mot havet, pluss barnebasseng."},
+  {c:"Sport og spill",n:"Sykler",d:"Lån sykkel for å komme deg rundt på Mabin."},
+  {c:"Sport og spill",n:"Spillrom",d:"Bordtennis, biljard, flipperspill, Pac-Man, airhockey, sjakk og brettspill."},
+  // Familie
+  {c:"Ungdom og familie",n:"Jawa Teens",d:"Golfakademi, fotball, vannpolo, bassengzumba, tube-turer, sykling, fisketurer, piknik på ubebodd øy, bodu beru-tromming, strandgrill og kreativt.",age:"Ungdom"},
+  {c:"Ungdom og familie",n:"Jawa Kids Club",d:"Åpent daglig kl. 09–19. Kokosjakt, sandslott, matlaging, mocktails og mer.",age:"4–17 år"},
+  {c:"Ungdom og familie",n:"Familiebilder med PIX Maldives",d:"Fotograf og drone, både bilder og video."},
+  // Underholdning
+  {c:"Underholdning",n:"Bodu beru-show",d:"Tradisjonell maldivisk tromming og dans."},
+  {c:"Underholdning",n:"Livemusikk",d:"Musikk i barene om kvelden."},
+  {c:"Underholdning",n:"DJ og disko",d:"Discokvelder."},
+  {c:"Underholdning",n:"Butikk",d:"Badetøy, sportsklær, bøker, kunst og håndverk."}
+];
+const OFFERS = [
+  {n:"2027 Winter Getaways – 30 % rabatt",d:"Opphold 6. januar–29. mars 2027. Må bookes direkte innen 30. november 2026. Kan ikke kombineres med andre rabatter.",tag:"Gjelder datoene deres"},
+  {n:"Island Escapes – 40 % rabatt",d:"Opphold 1. november–26. desember 2026. Book innen 30. november 2026.",tag:"Ikke deres datoer"},
+  {n:"Child Stays Free, sommer 2027",d:"Gratis opphold for ett barn 2–11 år, 15. mai–31. oktober 2027.",tag:"Ikke deres datoer"},
+  {n:"Romantic Celebration",d:"For bryllupsreise og sølv- eller gullbryllup: musserende vin, pyntet seng og kake. Hele året.",tag:"Hele året"},
+  {n:"Premium All Inclusive",d:"Alle måltider, drikke i barene kl. 08–01, påfyll i minibar, én delfintur, snorkletur til husrevet to ganger daglig, kajakk og windsurf, tennis, padel og golf, kidsklubb 4–17 år og spa for alle fra 15 år.",tag:"Måltidspakke"}
+];
+
+/* All inclusive-analysen fra prosjektet */
+const AI = {
+  frokost:"Frokost (booket via Booking.com)",
+  tillegg:{halvpensjon:58,fullpensjon:90,ai:165},
+  ekstraFamilie:{fullpensjon:2170,ai:3950},
+  breakEvenFrokost:"Lunsj og middag à la carte koster rundt 130 dollar per person per dag. Drikker dere to–tre drinker i tillegg, blir all inclusive billigst.",
+  breakEvenFull:"Mot fullpensjon lønner all inclusive seg ved rundt fire alkoholdrinker for en voksen, eller fem–sju brus, smoothie eller kaffe for ungdom, per dag.",
+  priser:[["Kaffe","10,30"],["Brus","10,30"],["Øl","15,40"],["Glass vin","fra 15,40"],["Cocktail","20,60–25,70"],["Hovedrett à la carte","fra 38,60"]],
+  regler:["Pakken må gjelde hele oppholdet og alle i villaen","Ikke alkohol til under 18 år","Gallamiddager og mat på villaen er ikke inkludert"],
+  anbefaling:"Premium All Inclusive"
+};
+
+const PACK_TEMPLATE = {
+  felles:["Pass (gyldig til minst 27. august 2027)","Revvennlig solkrem SPF 50","UV-trøye","Badetøy (2 sett)","Revsko","Solbriller","Caps eller hatt","Lette klær","Klær som dekker skuldre og knær (lokal øy)","Sandaler","Mobillader","Tannbørste og toalettsaker","Medisiner","Vannflaske","Varm genser til flyet"],
+  voksen:["Reiseforsikringsbevis","Kredittkort","USD i nye sedler (ikke gamle 100-dollarsedler)","Kopi av pass og bestillinger","Førstehjelpsskrin","Reiseadapter type G (britisk)"],
+  ungdom:["Høretelefoner","Bok eller nedlastede serier","Snorkelmaske som passer"]
+};
+const SHOP_TEMPLATE = [
+  ["Revvennlig solkrem SPF 50 (flere flasker)",350],["Aftersun",120],["Revsko til alle fire",800],["UV-trøyer",600],["Reiseadapter type G",150],["Vanntett mobilveske",200],["Myggmiddel",120],["Plaster og smertestillende",150],["USD-kontanter til tips (nye sedler)",0]
+];
+
+const EMERGENCY = [
+  ["Resortens resepsjon","+960 662 9999"],["Reservasjon (WhatsApp)","+960 729 2415"],["Resortens flyplassteam","+960 725 5198"],
+  ["Politi (Maldivene)","119"],["Ambulanse (Maldivene)","102"],["Brann (Maldivene)","118"],["Kystvakt (Maldivene)","191"],
+  ["UDs operative senter, døgnåpent","+47 23 95 00 00"]
+];
+
+/* ================= STATE ================= */
+const LS_KEY = "jawakara-app-v1";
+const now = () => Date.now();
+const uid = () => Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-3);
+function freshState(){
+  const s = {v:1, me:null, profiles:DEFAULT_PROFILES.map(p=>({...p,ts:0})), done:{}, quiz:{}, pack:{}, shop:[], plan:[], flights:[], fx:null, wx:null, marine:null, seeded:false};
+  s.flights = [
+    {id:"f-ut",dir:"Utreise",no:"",from:"Oslo (OSL)",to:"Malé (MLE)",dep:"",arr:"",via:"",ts:0},
+    {id:"f-hjem",dir:"Hjemreise",no:"",from:"Malé (MLE)",to:"Oslo (OSL)",dep:"",arr:"",via:"",ts:0}
+  ];
+  return s;
+}
+let S;
+function load(){
+  try{ const raw = localStorage.getItem(LS_KEY); S = raw ? Object.assign(freshState(), JSON.parse(raw)) : freshState(); }
+  catch(e){ S = freshState(); }
+  if(!S.seeded){ seed(); S.seeded = true; save(); }
+}
+function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }catch(e){} }
+function seed(){
+  S.profiles.forEach(p=>{
+    const items = [...PACK_TEMPLATE.felles, ...(p.id==="p1"||p.id==="p2" ? PACK_TEMPLATE.voksen : PACK_TEMPLATE.ungdom)];
+    S.pack[p.id] = items.map(t=>({id:uid(),t,done:false,ts:0}));
+  });
+  S.shop = SHOP_TEMPLATE.map(([t,pr])=>({id:uid(),t,price:pr||"",who:"",done:false,ts:0}));
+}
+const prof = id => S.profiles.find(p=>p.id===id);
+const me = () => prof(S.me) || S.profiles[0];
+
+/* ================= HELPERS ================= */
+const $ = (s,el=document)=>el.querySelector(s);
+const esc = v => String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const nf = (n,d=0)=>Number(n).toLocaleString("nb-NO",{minimumFractionDigits:d,maximumFractionDigits:d});
+const MON = ["jan","feb","mar","apr","mai","jun","jul","aug","sep","okt","nov","des"];
+const WD = ["søn","man","tir","ons","tor","fre","lør"];
+function dparse(iso){ const [y,m,d]=iso.split("-").map(Number); return new Date(Date.UTC(y,m-1,d)); }
+function diso(dt){ return dt.toISOString().slice(0,10); }
+function fmtDay(iso){ const d=dparse(iso); return `${WD[d.getUTCDay()]} ${d.getUTCDate()}. ${MON[d.getUTCMonth()]}`; }
+function fmtInOffset(ms, off, withDay){ const d=new Date(ms+off*3600e3); const hh=String(d.getUTCHours()).padStart(2,"0"), mm=String(d.getUTCMinutes()).padStart(2,"0"); return (withDay?`${WD[d.getUTCDay()]} `:"")+`${hh}.${mm}`; }
+function osloOffset(ms){ // CET/CEST
+  const y=new Date(ms).getUTCFullYear();
+  const lastSun=(m)=>{const d=new Date(Date.UTC(y,m+1,0,1));d.setUTCDate(d.getUTCDate()-d.getUTCDay());return d.getTime();};
+  return (ms>=lastSun(2)&&ms<lastSun(9))?2:1;
+}
+let toastT;
+function toast(msg){ let t=$("#toast"); if(!t){t=document.createElement("div");t.id="toast";t.className="toast";t.setAttribute("role","status");document.body.appendChild(t);} t.textContent=msg; t.hidden=false; clearTimeout(toastT); toastT=setTimeout(()=>t.hidden=true,2200); }
+
+/* ================= SCORING ================= */
+function stats(pid){
+  const done = S.done[pid]||{};
+  const has = id => !!(done[id] && done[id].on);
+  const catCount = c => CHALLENGES.filter(x=>x.c===c && has(x.id)).length;
+  const q = S.quiz[pid]||{};
+  const quizRight = Object.values(q).filter(v=>v&&v.ok).length;
+  const pk = (S.pack[pid]||[]).filter(i=>!i.del);
+  const packDone = pk.length>=5 && pk.every(i=>i.done);
+  let points = CHALLENGES.reduce((a,x)=>a+(has(x.id)?x.p:0),0) + quizRight*5;
+  const s = {has,catCount,quizRight,packDone,points};
+  const badges = BADGES.filter(b=>b.test(s)).map(b=>b.id);
+  s.points += badges.length*10;
+  s.badges = badges;
+  return s;
+}
+
+/* ================= ROUTING ================= */
+const TABS = ["hjem","plan","moro","resort","mer"];
+let sub = {moro:"utfordringer", mer:"pakkeliste"};
+try{ const ss=JSON.parse(localStorage.getItem(LS_KEY+"-sub")||"null"); if(ss) sub=Object.assign(sub,ss);}catch(e){}
+let planDay = null, resCat = "Alle", chCat = "Alle", chWho = null, quizState = null;
+
+function route(){
+  const h = (location.hash||"").replace("#","");
+  const tab = TABS.includes(h) ? h : "hjem";
+  document.querySelectorAll("#tabs a").forEach(a=>a.toggleAttribute("aria-current",a.dataset.tab===tab) || a.setAttribute("aria-current", a.dataset.tab===tab?"page":"false"));
+  document.querySelectorAll("#tabs a").forEach(a=>{ if(a.dataset.tab===tab) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
+  render(tab);
+}
+function render(tab){
+  tab = tab || (TABS.includes(location.hash.slice(1))?location.hash.slice(1):"hjem");
+  const m = $("#main");
+  m.innerHTML = `<div class="view">${VIEWS[tab]()}</div>`;
+  AFTER[tab] && AFTER[tab]();
+  renderHeader();
+}
+function setSub(tab,val){ sub[tab]=val; try{localStorage.setItem(LS_KEY+"-sub",JSON.stringify(sub));}catch(e){} render(tab); }
+
+/* ================= HEADER ================= */
+function departureMs(){
+  const f = S.flights.find(f=>f.id==="f-ut");
+  if(f && f.dep){ const t = Date.parse(f.dep); if(!isNaN(t)) return t; }
+  return Date.UTC(2027,1,20,12,0) - 3600e3; // antatt: lør 20. feb kl. 12 norsk tid
+}
+function depLabel(){ const f=S.flights.find(f=>f.id==="f-ut"); return f&&f.dep ? "til avreise" : "til avreise (anslått 20. feb)"; }
+function renderHeader(){
+  const p = me();
+  $("#meAv").textContent = p.emoji; $("#meName").textContent = p.name.split(" ")[0];
+  const ci = Date.UTC(2027,1,21) - TRIP.islandOffset*3600e3, co = Date.UTC(2027,1,27,12) - TRIP.islandOffset*3600e3;
+  const dep = departureMs(), n = now();
+  const c = $("#count");
+  if(n < dep){
+    const diff = dep-n, d=Math.floor(diff/864e5), h=Math.floor(diff%864e5/36e5), mi=Math.floor(diff%36e5/6e4);
+    $("#heroTitle").textContent = "Snart sjøfly og korallrev";
+    c.innerHTML = `<div class="big-days"><b>${d}</b><span>dager igjen</span></div><div class="hm"><span class="num">${h} t ${mi} min</span><br>${depLabel()}</div>`;
+  } else if(n < co){
+    const day = Math.max(1,Math.floor((n-ci)/864e5)+1);
+    $("#heroTitle").textContent = n<ci ? "Vi er på vei!" : `Dag ${day} av 7 på Jawakara`;
+    c.innerHTML = `<div><b>${fmtInOffset(n,TRIP.islandOffset)}</b><span>øytid</span></div><div><b>${fmtInOffset(n,osloOffset(n))}</b><span>Norge</span></div>`;
+  } else {
+    $("#heroTitle").textContent = "Velkommen hjem!";
+    c.innerHTML = `<div><b>${stats(S.me||"p1").points}</b><span>dine poeng</span></div>`;
+  }
+}
+setInterval(()=>{ renderHeader(); const tk=$("#clockTick"); if(tk) updClocks(); }, 30000);
+
+/* ================= VIEWS ================= */
+const VIEWS = {}, AFTER = {};
+
+VIEWS.hjem = () => {
+  const rows = S.profiles.map(p=>({p,s:stats(p.id)})).sort((a,b)=>b.s.points-a.s.points);
+  const max = Math.max(50,...rows.map(r=>r.s.points));
+  return `
+  <section class="card" aria-labelledby="wxH">
+    <div class="card-h"><h2 id="wxH">Dagens vær på Maldivene</h2><a href="#mer" data-sub="vaer" class="small js-sub">7 dager og tidevann</a></div>
+    ${wxSceneCard()}
+  </section>
+  <section class="card" aria-labelledby="lbH">
+    <div class="card-h"><h2 id="lbH">Familiekampen</h2><a href="#moro" class="small">Se oppgaver</a></div>
+    <div class="lb">${rows.map((r,i)=>`
+      <div class="lb-row"><span class="av">${esc(r.p.emoji)}</span>
+        <div style="min-width:0"><div class="lb-name">${i===0&&r.s.points>0?"👑 ":""}${esc(r.p.name)}</div>
+          <div class="bar"><i style="width:${Math.round(r.s.points/max*100)}%"></i></div></div>
+        <div class="lb-pts">${r.s.points}<small>${r.s.badges.length} merker</small></div></div>`).join("")}
+    </div>
+  </section>
+  <section class="card" aria-labelledby="dlH">
+    <div class="card-h"><h2 id="dlH">Huskeliste før avreise</h2></div>
+    ${deadlinesHTML()}
+  </section>
+  <section class="grid2">
+    <div class="card"><div class="eyebrow">Dagens dhivehi-ord</div>${wordOfDay()}</div>
+    <div class="card"><div class="eyebrow">Visste du?</div><p style="margin-top:6px">${factOfDay()}</p></div>
+  </section>`;
+};
+AFTER.hjem = () => { bindSubLinks(); refreshLive(); };
+function bindSubLinks(){ document.querySelectorAll(".js-sub").forEach(a=>a.addEventListener("click",()=>{ sub.mer=a.dataset.sub; try{localStorage.setItem(LS_KEY+"-sub",JSON.stringify(sub));}catch(e){} })); }
+
+const FACTS = ["Papegøyefisken lager mye av den hvite sanden på strendene.","Maldivene er verdens laveste land, i snitt 1,5 meter over havet.","Ordet «atoll» kommer fra dhivehi.","I 2009 holdt regjeringen et møte under vann for å vise faren ved havstigning.","Jawakara har en egen golfbane, sjelden på Maldivene.","Trans Maldivian Airways har en av verdens største flåter av sjøfly.","Klovnefisker er født som hanner og kan bli hunner senere.","Skilpadder kan holde pusten i flere timer når de sover.","Spinnerdelfiner kan snurre sju ganger rundt i ett hopp.","Det er ikke lov å ha hund som kjæledyr på Maldivene."];
+const WORDS = [["Shukuriyaa","Takk"],["Kihineh?","Hvordan går det?"],["Barabaru","Bra"],["Varah reethi","Veldig vakkert"],["Assalaamu alaikum","Hei"],["Mas","Fisk"],["Rah","Øy"],["Aan","Ja"],["Noon","Nei"],["Dhanee","Ha det"]];
+const dayIdx = () => Math.floor(now()/864e5);
+function wordOfDay(){ const w=WORDS[dayIdx()%WORDS.length]; return `<p style="margin-top:6px"><span style="font-family:var(--font-d);font-size:1.5rem;color:var(--sea)">${w[0]}</span><br>${w[1]}</p>`; }
+function factOfDay(){ return FACTS[dayIdx()%FACTS.length]; }
+
+function deadlines(){
+  const out = [];
+  const f = S.flights.find(f=>f.id==="f-ut");
+  const depIso = f&&f.dep ? f.dep.slice(0,10) : "2027-02-20";
+  const imuga = diso(new Date(dparse(depIso).getTime()-4*864e5));
+  out.push({d:"2026-11-30",t:"Siste dag for Winter Getaways (30 %)",x:"Gjelder bare direktebooking hos resorten. Dere har booket via Booking.com."});
+  out.push({d:"2027-02-01",t:"Betal sjøflyet",x:"Resorten sender faktura. Alle fire er over 12 år: 4 × 430 = 1 720 dollar tur–retur."});
+  out.push({d:"2027-02-14",t:"Send flyinfo og alle navn til resorten",x:"Senest 7 dager før ankomst, til reservations@jawakara.com. Uten dette bestilles ikke sjøflyet."});
+  out.push({d:imuga,t:"Fyll ut IMUGA reiseerklæring",x:"For alle fire, innen 96 timer før reisen, på imuga.immigration.gov.mv."});
+  out.push({d:"2027-02-19",t:"Sjekk at passene er gyldige",x:"Minst 6 måneder etter ankomst, dvs. til 21. august 2027 eller senere."});
+  out.push({d:"2027-02-19",t:"Ta ut riktige dollarsedler",x:"Gamle 100-dollarsedler (hvite) og britiske papirsedler på 20 og 50 pund tas ikke imot."});
+  return out.sort((a,b)=>a.d.localeCompare(b.d));
+}
+function deadlinesHTML(){
+  const today = diso(new Date());
+  return deadlines().map(x=>{ const d=dparse(x.d); const past = x.d<today;
+    return `<div class="deadline" ${past?'style="opacity:.55"':""}><div class="dl-date"><b>${d.getUTCDate()}</b><span>${MON[d.getUTCMonth()]}</span></div><div><div style="font-weight:800">${esc(x.t)}</div><div class="small muted">${esc(x.x)}</div></div></div>`; }).join("");
+}
+
+/* ---------- PLAN ---------- */
+function tripDays(){
+  const f = S.flights.find(f=>f.id==="f-ut"), h = S.flights.find(f=>f.id==="f-hjem");
+  const start = f&&f.dep ? f.dep.slice(0,10) : "2027-02-20";
+  const end = h&&h.arr ? h.arr.slice(0,10) : "2027-02-27";
+  const days=[]; for(let t=dparse(start).getTime(); t<=dparse(end).getTime(); t+=864e5) days.push(diso(new Date(t)));
+  if(!days.includes("2027-02-27")) days.push("2027-02-27");
+  return days;
+}
+function fixedEvents(day){
+  const ev = [];
+  S.flights.forEach(fl=>{
+    if(fl.dep && fl.dep.slice(0,10)===day) ev.push({tm:fl.dep.slice(11,16),t:`Fly ${fl.no||""} ${fl.from} → ${fl.to}`.replace(/\s+/g," "),d:`${fl.dir}${fl.via?`, via ${fl.via}`:""}. Lokal tid.`});
+    if(fl.arr && fl.arr.slice(0,10)===day) ev.push({tm:fl.arr.slice(11,16),t:`Lander ${fl.to}`,d:`${fl.dir}. Lokal tid.`});
+  });
+  if(day==="2027-02-21"){ ev.push({tm:"",t:"Sjøfly fra Malé til Jawakara",d:"Ca. 35–40 min. Går 1–2 timer etter at alle har kommet gjennom passkontrollen. Møt resortens representant ved Crown & Champa-skranken (B9, terminal 2)."}); ev.push({tm:"14.00",t:"Innsjekk",d:"Villaen er klar fra kl. 14 øytid. Still klokka én time frem fra Malé-tid."}); }
+  if(day==="2027-02-27"){ ev.push({tm:"12.00",t:"Utsjekk",d:"Siste sjøfly fra Jawakara går mellom kl. 13 og 16."}); ev.push({tm:"",t:"Sjøfly til Malé",d:"Hjemreisen må gå fra Malé kl. 09.00 eller senere (Malé-tid)."}); }
+  return ev;
+}
+VIEWS.plan = () => {
+  const days = tripDays();
+  if(!planDay || !days.includes(planDay)) planDay = days.includes(diso(new Date())) ? diso(new Date()) : "2027-02-21";
+  const items = S.plan.filter(x=>!x.del && x.day===planDay).sort((a,b)=>(a.tm||"99").localeCompare(b.tm||"99"));
+  const fixed = fixedEvents(planDay);
+  const all = [...fixed.map(e=>({...e,fixed:true})), ...items.map(i=>({tm:i.tm,t:i.t,d:i.note,id:i.id}))].sort((a,b)=>(a.tm||"").localeCompare(b.tm||""));
+  return `
+  <section class="card">
+    <div class="card-h"><h2>Kalender</h2><span class="small muted">Tider på resorten er i øytid</span></div>
+    <div class="days" role="group" aria-label="Velg dag">${days.map(d=>{const dd=dparse(d); const onResort=d>="2027-02-21"&&d<="2027-02-27"; return `<button class="day ${onResort?"trip":""}" type="button" data-day="${d}" aria-pressed="${d===planDay}"><span>${WD[dd.getUTCDay()]}</span><b>${dd.getUTCDate()}</b><span>${MON[dd.getUTCMonth()]}</span></button>`;}).join("")}</div>
+  </section>
+  <section class="card">
+    <div class="card-h"><h3>${fmtDay(planDay)}</h3><button class="btn sm" type="button" id="addEvBtn">Legg til</button></div>
+    ${all.length? all.map(e=>`<div class="ev ${e.fixed?"fixed":""}"><div class="tm">${esc(e.tm||"–")}</div><div style="min-width:0"><div class="tt">${esc(e.t)}</div>${e.d?`<div class="dd">${esc(e.d)}</div>`:""}</div>${e.id?`<button class="iconbtn" type="button" data-delev="${e.id}" aria-label="Slett">✕</button>`:"<span></span>"}</div>`).join("") : `<div class="empty">Ingenting planlagt ennå. Legg til en aktivitet her, eller trykk «Legg i plan» på en aktivitet under Resort.</div>`}
+  </section>
+  <section class="card">
+    <div class="card-h"><h2>Flyreisen</h2><span class="pill warn">${S.flights.some(f=>f.no)?"Oppdatert":"Fyll inn når billettene er klare"}</span></div>
+    <div class="stack">${S.flights.map(f=>`
+      <div class="flight" data-fid="${f.id}">
+        <div class="fh"><b>${esc(f.dir)}</b><span class="small muted">Lokal tid på hver flyplass</span></div>
+        <div class="fgrid">
+          <label class="f">Flynummer<input type="text" id="fl-${f.id}-no" data-k="no" value="${esc(f.no)}" placeholder="f.eks. QR 176"></label>
+          <label class="f">Via<input type="text" id="fl-${f.id}-via" data-k="via" value="${esc(f.via)}" placeholder="f.eks. Doha"></label>
+          <label class="f">Fra<input type="text" id="fl-${f.id}-from" data-k="from" value="${esc(f.from)}"></label>
+          <label class="f">Til<input type="text" id="fl-${f.id}-to" data-k="to" value="${esc(f.to)}"></label>
+          <label class="f">Avgang<input type="datetime-local" id="fl-${f.id}-dep" data-k="dep" value="${esc(f.dep)}"></label>
+          <label class="f">Ankomst<input type="datetime-local" id="fl-${f.id}-arr" data-k="arr" value="${esc(f.arr)}"></label>
+        </div>
+      </div>`).join("")}
+      <p class="note">Sjøflyet krever at dere lander i Malé mellom kl. 06.00 og 15.45, og at hjemflyet går etter kl. 09.00.</p>
+    </div>
+  </section>`;
+};
+AFTER.plan = () => {
+  document.querySelectorAll("[data-day]").forEach(b=>b.addEventListener("click",()=>{planDay=b.dataset.day; render("plan");}));
+  const sel=document.querySelector('.day[aria-pressed="true"]'); sel&&sel.scrollIntoView({inline:"center",block:"nearest"});
+  $("#addEvBtn").addEventListener("click",()=>openEventSheet());
+  document.querySelectorAll("[data-delev]").forEach(b=>b.addEventListener("click",()=>{const it=S.plan.find(x=>x.id===b.dataset.delev); if(it){it.del=true;it.ts=now();save();render("plan");}}));
+  document.querySelectorAll(".flight input").forEach(inp=>inp.addEventListener("change",()=>{
+    const f=S.flights.find(x=>x.id===inp.closest(".flight").dataset.fid); f[inp.dataset.k]=inp.value; f.ts=now(); save(); renderHeader(); toast("Lagret");
+  }));
+};
+function openEventSheet(pref){
+  pref = pref||{};
+  const days = tripDays();
+  sheet(`<h2>Legg til i planen</h2>
+    <label class="f">Hva<input type="text" id="evT" value="${esc(pref.t||"")}" placeholder="f.eks. Delfinsafari"></label>
+    <div class="fgrid"><label class="f">Dag<select id="evD">${days.map(d=>`<option value="${d}" ${d===(pref.day||planDay)?"selected":""}>${fmtDay(d)}</option>`).join("")}</select></label>
+    <label class="f">Klokkeslett (øytid)<input type="time" id="evTm" value=""></label></div>
+    <label class="f">Notat<input type="text" id="evN" value="${esc(pref.note||"")}" placeholder="Hvem blir med, hva må med"></label>
+    <div class="row"><button class="btn" type="button" id="evSave">Lagre</button><button class="btn ghost" type="button" data-close>Avbryt</button></div>`,
+  (root)=>{ $("#evSave",root).addEventListener("click",()=>{ const t=$("#evT",root).value.trim(); if(!t){$("#evT",root).focus();return;} S.plan.push({id:uid(),day:$("#evD",root).value,tm:$("#evTm",root).value.replace(":","."),t,note:$("#evN",root).value.trim(),ts:now()}); planDay=$("#evD",root).value; save(); closeSheet(); toast("Lagt i planen"); if(location.hash==="#plan") render("plan"); }); });
+}
+
+/* ---------- MORO ---------- */
+VIEWS.moro = () => {
+  const s = sub.moro;
+  const seg = `<div class="seg" role="tablist">${[["utfordringer","Oppgaver"],["merker","Merker"],["quiz","Quiz"],["laer","Lær"]].map(([k,l])=>`<button role="tab" type="button" data-seg="${k}" aria-selected="${s===k}">${l}</button>`).join("")}</div>`;
+  return seg + (s==="merker"?badgesView(): s==="quiz"?quizView(): s==="laer"?learnView(): challengesView());
+};
+AFTER.moro = () => {
+  document.querySelectorAll("[data-seg]").forEach(b=>b.addEventListener("click",()=>setSub("moro",b.dataset.seg)));
+  document.querySelectorAll("[data-chcat]").forEach(b=>b.addEventListener("click",()=>{chCat=b.dataset.chcat;render("moro");}));
+  document.querySelectorAll("[data-who]").forEach(b=>b.addEventListener("click",()=>{chWho=b.dataset.who;render("moro");}));
+  document.querySelectorAll("[data-ch]").forEach(b=>b.addEventListener("click",()=>{
+    const pid = chWho||S.me||"p1"; S.done[pid]=S.done[pid]||{};
+    const before = stats(pid).badges;
+    const cur = S.done[pid][b.dataset.ch]; const on = !(cur&&cur.on);
+    S.done[pid][b.dataset.ch] = {on,ts:now()}; save();
+    const after = stats(pid).badges.filter(x=>!before.includes(x));
+    const c = CHALLENGES.find(x=>x.id===b.dataset.ch);
+    render("moro");
+    if(on){ const nb=after.length?BADGES.find(x=>x.id===after[0]):null; toast(nb?`Nytt merke: ${nb.ic} ${nb.n}!`:`+${c.p} poeng til ${prof(pid).name.split(" ")[0]}`); }
+  }));
+  bindQuiz();
+};
+function whoPicker(){
+  const cur = chWho||S.me||"p1";
+  return `<div class="chips" role="group" aria-label="Hvem får poengene">${S.profiles.map(p=>`<button type="button" class="chip" data-who="${p.id}" aria-pressed="${p.id===cur}">${esc(p.emoji)} ${esc(p.name.split(" ")[0])}</button>`).join("")}</div>`;
+}
+function challengesView(){
+  const pid = chWho||S.me||"p1"; const st = stats(pid);
+  const list = CHALLENGES.filter(c=>chCat==="Alle"||c.c===chCat);
+  return `<section class="card">
+    <div class="card-h"><h2>Oppgaver og utfordringer</h2><span class="pill coral num">${st.points} poeng</span></div>
+    <div class="stack">
+      <div><div class="eyebrow" style="margin-bottom:6px">Hvem fullførte?</div>${whoPicker()}</div>
+      <div class="chips" role="group" aria-label="Kategori">${["Alle",...CH_CATS].map(c=>`<button type="button" class="chip" data-chcat="${c}" aria-pressed="${c===chCat}">${c}</button>`).join("")}</div>
+    </div>
+    <div style="margin-top:8px">${list.map(c=>{const on=st.has(c.id); return `<div class="ch"><div style="min-width:0"><div class="t">${esc(c.t)}</div><div class="d">${esc(c.d)}</div></div><button type="button" class="ch-btn" data-ch="${c.id}" aria-pressed="${on}">${on?"✓ ":""}${c.p} p</button></div>`;}).join("")}</div>
+    <p class="note" style="margin-top:8px">Quizsvar gir 5 poeng hver, og hvert merke gir 10 bonuspoeng. Ærlighet varer lengst.</p>
+  </section>`;
+}
+function badgesView(){
+  return S.profiles.map(p=>{ const st=stats(p.id);
+    return `<section class="card"><div class="card-h"><h3>${esc(p.emoji)} ${esc(p.name)}</h3><span class="pill num">${st.badges.length} av ${BADGES.length}</span></div>
+    <div class="badges">${BADGES.map(b=>`<div class="badge ${st.badges.includes(b.id)?"on":""}"><span class="ic">${b.ic}</span>${esc(b.n)}<small>${esc(b.how)}</small></div>`).join("")}</div></section>`; }).join("");
+}
+function quizView(){
+  const pid = S.me||"p1"; const q = S.quiz[pid]||{};
+  const answered = Object.keys(q).length, right = Object.values(q).filter(v=>v.ok).length;
+  const lb = S.profiles.map(p=>({p,r:Object.values(S.quiz[p.id]||{}).filter(v=>v.ok).length})).sort((a,b)=>b.r-a.r);
+  if(!quizState){ const left = QUIZ.filter(x=>!q[x.id]); quizState = {qid: left.length? left[Math.floor(Math.random()*left.length)].id : null, picked:null}; }
+  const cur = QUIZ.find(x=>x.id===quizState.qid);
+  return `<section class="card">
+    <div class="card-h"><h2>Maldivene-quiz</h2><span class="small muted num">${esc(me().name.split(" ")[0])}: ${right} riktige av ${answered} · ${QUIZ.length} spørsmål</span></div>
+    ${cur? `<p style="font-weight:800;font-size:1.1rem">${esc(cur.q)}</p>
+      <div class="q-opts">${cur.o.map((o,i)=>{ let cls=""; if(quizState.picked!=null){ if(i===cur.a) cls="right"; else if(i===quizState.picked) cls="wrong"; } return `<button type="button" class="q-opt ${cls}" data-qo="${i}" ${quizState.picked!=null?"disabled":""}>${esc(o)}</button>`;}).join("")}</div>
+      ${quizState.picked!=null?`<div class="q-ex"><b>${quizState.picked===cur.a?"Riktig! +5 poeng.":"Ikke helt."}</b> ${esc(cur.e)}</div><div class="row" style="margin-top:12px"><button type="button" class="btn" id="qNext">Neste spørsmål</button></div>`:""}`
+    : `<div class="empty">Du har svart på alle spørsmålene. Bra jobba! Du kan starte på nytt for å øve, men poengene telles bare første gang.</div><div class="row" style="margin-top:10px"><button class="btn ghost" type="button" id="qReset">Øv på nytt</button></div>`}
+  </section>
+  <section class="card"><div class="card-h"><h3>Quiztavle</h3><span class="small muted">Vinneren kan krysse av «Vinn familiequizen»</span></div>
+    <div class="list">${lb.map(x=>`<div class="li"><span class="av" style="width:32px;height:32px;font-size:18px">${esc(x.p.emoji)}</span><span class="t">${esc(x.p.name)}</span><b class="num">${x.r}</b></div>`).join("")}</div></section>`;
+}
+let practice = false;
+function bindQuiz(){
+  document.querySelectorAll("[data-qo]").forEach(b=>b.addEventListener("click",()=>{
+    const pid=S.me||"p1"; const cur=QUIZ.find(x=>x.id===quizState.qid); quizState.picked=+b.dataset.qo;
+    S.quiz[pid]=S.quiz[pid]||{}; if(!S.quiz[pid][cur.id] && !practice){ S.quiz[pid][cur.id]={ok:quizState.picked===cur.a,ts:now()}; save(); }
+    render("moro");
+  }));
+  const n=$("#qNext"); n&&n.addEventListener("click",()=>{ const pid=S.me||"p1"; const q=S.quiz[pid]||{}; const left=QUIZ.filter(x=>practice?x.id!==quizState.qid:!q[x.id]); quizState={qid:left.length?left[Math.floor(Math.random()*left.length)].id:null,picked:null}; render("moro"); });
+  const r=$("#qReset"); r&&r.addEventListener("click",()=>{ practice=true; quizState={qid:QUIZ[Math.floor(Math.random()*QUIZ.length)].id,picked:null}; render("moro"); });
+}
+function learnView(){
+  return `<div class="learn">${LEARN.map(l=>`<details class="lc"><summary><span class="em">${l.em}</span><span>${l.t}<span class="s2">${l.s}</span></span></summary><div class="body">${l.body}</div></details>`).join("")}</div>`;
+}
+
+/* ---------- RESORT ---------- */
+VIEWS.resort = () => {
+  const cats = ["Alle",...new Set(RESORT.map(r=>r.c))];
+  const list = RESORT.filter(r=>resCat==="Alle"||r.c===resCat);
+  return `
+  <section class="card">
+    <div class="card-h"><h2>Jawakara Islands</h2><span class="pill">5 stjerner</span></div>
+    <div class="stat">
+      <div><b>2</b><span>øyer, Mabin og Dheru</span></div>
+      <div><b>650 m</b><span>bru over husrevet</span></div>
+      <div><b>290</b><span>villaer</span></div>
+      <div><b>50+</b><span>dykkesteder i atollen</span></div>
+    </div>
+    <dl class="kv" style="margin-top:12px">
+      <dt>Innsjekk</dt><dd>søn 21. feb fra kl. 14</dd>
+      <dt>Utsjekk</dt><dd>lør 27. feb innen kl. 12</dd>
+      <dt>Klokka</dt><dd>Øytid GMT+6, én time foran Malé</dd>
+      <dt>Strøm</dt><dd>220 V, britiske stikkontakter (type G)</dd>
+      <dt>Wi-Fi</dt><dd>Gratis overalt</dd>
+      <dt>Lege</dt><dd>Fast lege på Mabin</dd>
+      <dt>Bookingnr.</dt><dd class="num">6029136154 (Booking.com)</dd>
+    </dl>
+  </section>
+  <section class="card">
+    <div class="card-h"><h2>Alt resorten tilbyr</h2><span class="small muted">${RESORT.length} tilbud</span></div>
+    <div class="chips" role="group" aria-label="Kategori">${cats.map(c=>`<button type="button" class="chip" data-rcat="${esc(c)}" aria-pressed="${c===resCat}">${esc(c)}</button>`).join("")}</div>
+    <div style="margin-top:6px">${list.map((r,i)=>`<div class="act"><div class="ah"><span class="an">${esc(r.n)}</span>${r.age?`<span class="pill">${esc(r.age)}</span>`:""}</div><p class="ad">${esc(r.d)}</p><div class="row"><span class="pill">${esc(r.c)}</span><span class="spacer"></span><button type="button" class="btn ghost sm" data-addact="${esc(r.n)}">Legg i plan</button></div></div>`).join("")}</div>
+    <p class="note" style="margin-top:10px">Hentet fra jawakara.com 23. november 2026. Priser og tider finnes i resortens bookingportal og app, og bør sjekkes der.</p>
+  </section>
+  <section class="card">
+    <div class="card-h"><h2>Tilbud og pakker</h2></div>
+    ${OFFERS.map(o=>`<div class="act"><div class="ah"><span class="an">${esc(o.n)}</span><span class="pill ${o.tag==="Gjelder datoene deres"?"coral":""}">${esc(o.tag)}</span></div><p class="ad">${esc(o.d)}</p></div>`).join("")}
+  </section>
+  <section class="card">
+    <div class="card-h"><h2>Frokost eller all inclusive?</h2><span class="pill coral">Anbefalt: ${esc(AI.anbefaling)}</span></div>
+    <div class="stat">
+      <div><b class="num">$${AI.tillegg.halvpensjon}</b><span>halvpensjon, per person per natt</span></div>
+      <div><b class="num">$${AI.tillegg.fullpensjon}</b><span>fullpensjon, per person per natt</span></div>
+      <div><b class="num">$${AI.tillegg.ai}</b><span>all inclusive, per person per natt</span></div>
+      <div><b class="num">$${nf(AI.ekstraFamilie.ai)}</b><span>all inclusive i 6 netter for familien</span></div>
+    </div>
+    <p style="margin-top:12px">${esc(AI.breakEvenFrokost)}</p>
+    <p style="margin-top:8px">${esc(AI.breakEvenFull)}</p>
+    <div class="eyebrow" style="margin-top:12px">Priser i baren, med skatt (USD)</div>
+    <dl class="kv" style="margin-top:6px">${AI.priser.map(([k,v])=>`<dt>${esc(k)}</dt><dd class="num">${esc(v)}</dd>`).join("")}</dl>
+    <ul class="small muted" style="margin:10px 0 0;padding-left:18px">${AI.regler.map(r=>`<li>${esc(r)}</li>`).join("")}</ul>
+    <p class="note" style="margin-top:8px">Tilleggene gjelder i tillegg til frokosten dere har booket. Februar er høysesong og kan bli dyrere.</p>
+  </section>`;
+};
+AFTER.resort = () => {
+  document.querySelectorAll("[data-rcat]").forEach(b=>b.addEventListener("click",()=>{resCat=b.dataset.rcat;render("resort");}));
+  document.querySelectorAll("[data-addact]").forEach(b=>b.addEventListener("click",()=>openEventSheet({t:b.dataset.addact})));
+};
+
+/* ---------- MER ---------- */
+const MER = [["pakkeliste","Pakkeliste"],["innkjop","Innkjøp"],["valuta","Valuta"],["tid","Tid"],["vaer","Vær og hav"],["praktisk","Praktisk"],["profiler","Profiler og deling"]];
+VIEWS.mer = () => {
+  const s = sub.mer;
+  const seg = `<div class="seg" role="tablist">${MER.map(([k,l])=>`<button role="tab" type="button" data-mseg="${k}" aria-selected="${s===k}">${l}</button>`).join("")}</div>`;
+  const body = ({pakkeliste:packView,innkjop:shopView,valuta:fxView,tid:timeView,vaer:wxView,praktisk:practicalView,profiler:profilesView}[s]||packView)();
+  return seg + body;
+};
+AFTER.mer = () => {
+  document.querySelectorAll("[data-mseg]").forEach(b=>b.addEventListener("click",()=>setSub("mer",b.dataset.mseg)));
+  const sel=document.querySelector('[data-mseg][aria-selected="true"]'); sel&&sel.scrollIntoView({inline:"center",block:"nearest"});
+  ({pakkeliste:bindPack,innkjop:bindShop,valuta:bindFx,tid:bindTime,vaer:()=>{refreshLive(); const b=$("#wxRefresh"); b&&b.addEventListener("click",()=>refreshLive(true));},praktisk:bindPractical,profiler:bindProfiles}[sub.mer]||(()=>{}))();
+};
+
+let packWho = null;
+function packView(){
+  const pid = packWho||S.me||"p1";
+  const items = (S.pack[pid]||[]).filter(i=>!i.del);
+  const done = items.filter(i=>i.done).length;
+  return `<section class="card">
+    <div class="card-h"><h2>Pakkeliste</h2><span class="small muted num">${done} av ${items.length} pakket</span></div>
+    <div class="chips" role="group" aria-label="Hvem sin liste">${S.profiles.map(p=>`<button type="button" class="chip" data-pwho="${p.id}" aria-pressed="${p.id===pid}">${esc(p.emoji)} ${esc(p.name.split(" ")[0])}</button>`).join("")}</div>
+    <div class="progress" style="margin-top:12px"><i style="width:${items.length?Math.round(done/items.length*100):0}%"></i></div>
+    <div class="list" style="margin-top:8px">${items.map(i=>`<div class="li ${i.done?"done":""}"><input class="check" type="checkbox" id="pk-${i.id}" data-pk="${i.id}" ${i.done?"checked":""}><label class="t" for="pk-${i.id}">${esc(i.t)}</label><button class="iconbtn" type="button" data-pkdel="${i.id}" aria-label="Fjern">✕</button></div>`).join("")||`<div class="empty">Listen er tom. Legg til det du skal ha med.</div>`}</div>
+    <form class="addrow" id="pkForm" style="margin-top:10px"><input type="text" id="pkNew" placeholder="Legg til på ${esc(prof(pid).name.split(" ")[0])} sin liste" autocomplete="off"><button class="btn" type="submit">Legg til</button></form>
+  </section>`;
+}
+function bindPack(){
+  const pid = packWho||S.me||"p1";
+  document.querySelectorAll("[data-pwho]").forEach(b=>b.addEventListener("click",()=>{packWho=b.dataset.pwho;render("mer");}));
+  document.querySelectorAll("[data-pk]").forEach(c=>c.addEventListener("change",()=>{const it=S.pack[pid].find(x=>x.id===c.dataset.pk); const before=stats(pid).badges; it.done=c.checked; it.ts=now(); save(); const nb=stats(pid).badges.filter(x=>!before.includes(x)); render("mer"); if(nb.includes("pakk")) toast("Nytt merke: 🧳 Pakkeproff!");}));
+  document.querySelectorAll("[data-pkdel]").forEach(b=>b.addEventListener("click",()=>{const it=S.pack[pid].find(x=>x.id===b.dataset.pkdel); it.del=true; it.ts=now(); save(); render("mer");}));
+  $("#pkForm").addEventListener("submit",e=>{e.preventDefault(); const v=$("#pkNew").value.trim(); if(!v) return; (S.pack[pid]=S.pack[pid]||[]).push({id:uid(),t:v,done:false,ts:now()}); save(); render("mer"); $("#pkNew").focus();});
+}
+
+function shopView(){
+  const items = S.shop.filter(i=>!i.del);
+  const sum = items.reduce((a,i)=>a+(parseFloat(String(i.price).replace(",","."))||0),0);
+  const left = items.filter(i=>!i.done).reduce((a,i)=>a+(parseFloat(String(i.price).replace(",","."))||0),0);
+  return `<section class="card">
+    <div class="card-h"><h2>Innkjøp før reisen</h2><span class="small muted num">Igjen: ${nf(left)} kr av ${nf(sum)} kr</span></div>
+    <div class="list">${items.map(i=>`<div class="li ${i.done?"done":""}"><input class="check" type="checkbox" id="sh-${i.id}" data-sh="${i.id}" ${i.done?"checked":""}><label class="t" for="sh-${i.id}">${esc(i.t)}${i.who?` <span class="pill">${esc(i.who)}</span>`:""}</label><input type="number" inputmode="decimal" aria-label="Pris i kroner" style="width:92px;min-height:36px;padding:6px 8px" id="shp-${i.id}" data-shp="${i.id}" value="${esc(i.price)}" placeholder="kr"><button class="iconbtn" type="button" data-shdel="${i.id}" aria-label="Fjern">✕</button></div>`).join("")||`<div class="empty">Ingen ting på handlelisten.</div>`}</div>
+    <form class="stack" id="shForm" style="margin-top:10px">
+      <div class="addrow"><input type="text" id="shNew" placeholder="Hva må kjøpes?" autocomplete="off"><button class="btn" type="submit">Legg til</button></div>
+      <div class="fgrid"><label class="f">Anslått pris (kr)<input type="number" inputmode="decimal" id="shPrice"></label><label class="f">Hvem kjøper<select id="shWho"><option value="">Noen</option>${S.profiles.map(p=>`<option>${esc(p.name.split(" ")[0])}</option>`).join("")}</select></label></div>
+    </form>
+    <p class="note" style="margin-top:8px">Listen deles med de andre via «Profiler og deling».</p>
+  </section>`;
+}
+function bindShop(){
+  document.querySelectorAll("[data-sh]").forEach(c=>c.addEventListener("change",()=>{const it=S.shop.find(x=>x.id===c.dataset.sh); it.done=c.checked; it.ts=now(); save(); render("mer");}));
+  document.querySelectorAll("[data-shp]").forEach(c=>c.addEventListener("change",()=>{const it=S.shop.find(x=>x.id===c.dataset.shp); it.price=c.value; it.ts=now(); save(); render("mer");}));
+  document.querySelectorAll("[data-shdel]").forEach(b=>b.addEventListener("click",()=>{const it=S.shop.find(x=>x.id===b.dataset.shdel); it.del=true; it.ts=now(); save(); render("mer");}));
+  $("#shForm").addEventListener("submit",e=>{e.preventDefault(); const v=$("#shNew").value.trim(); if(!v) return; S.shop.push({id:uid(),t:v,price:$("#shPrice").value,who:$("#shWho").value,done:false,ts:now()}); save(); render("mer");});
+}
+
+/* ---------- VALUTA ---------- */
+const FX_FALLBACK = {NOK:10.6, MVR:15.42, EUR:0.86, USD:1, ts:0};
+const CUR = [["NOK","Norske kroner","kr"],["USD","Amerikanske dollar","$"],["MVR","Maldiviske rufiyaa","Rf"],["EUR","Euro","€"]];
+let fxAmt = 100, fxFrom = "USD", fxTax = false;
+function rates(){ return S.fx && S.fx.NOK ? S.fx : FX_FALLBACK; }
+function fxView(){
+  const r = rates();
+  return `<section class="card">
+    <div class="card-h"><h2>Valutakalkulator</h2><span class="small muted">${S.fx&&S.fx.ts?`Kurs fra ${new Date(S.fx.ts).toLocaleDateString("nb-NO")}`:"Eksempelkurs til appen er på nett"}</span></div>
+    <div class="fgrid"><label class="f">Beløp<input type="number" inputmode="decimal" id="fxAmt" value="${fxAmt}"></label>
+    <label class="f">Valuta<select id="fxFrom">${CUR.map(c=>`<option value="${c[0]}" ${c[0]===fxFrom?"selected":""}>${c[0]} – ${c[1]}</option>`).join("")}</select></label></div>
+    <label class="row small" style="margin-top:10px;font-weight:700"><input class="check" type="checkbox" id="fxTax" ${fxTax?"checked":""}> Legg til 10 % service og 17 % GST (menypris på resorten)</label>
+    <div class="fx-out" id="fxOut"></div>
+  </section>
+  <section class="card"><div class="card-h"><h3>Hurtigtabell</h3><span class="small muted">USD til NOK med skatt og service</span></div>
+    <div class="list">${[5,10,15,20,25,50,100,430].map(u=>`<div class="li"><span class="t num">$${u}${u===430?" (sjøfly per person)":""}</span><b class="num">${nf(u*(u===430?1:1.287)*r.NOK)} kr</b></div>`).join("")}</div>
+    <p class="note" style="margin-top:8px">Resorten tar USD, euro, pund og kort. Gamle 100-dollarsedler og britiske papirsedler på 20 og 50 pund tas ikke imot. Green tax er 12 dollar per person per natt.</p>
+  </section>`;
+}
+function fxCalc(){
+  const r = rates(); const amt = (parseFloat(String(fxAmt).replace(",","."))||0)*(fxTax?1.287:1);
+  const usd = amt / r[fxFrom];
+  $("#fxOut").innerHTML = CUR.filter(c=>c[0]!==fxFrom||fxTax).map(c=>`<div class="fx-line"><span>${c[1]}</span><b>${nf(usd*r[c[0]], c[0]==="NOK"||c[0]==="MVR"?0:2)} ${c[2]}</b></div>`).join("");
+}
+function bindFx(){
+  fxCalc();
+  $("#fxAmt").addEventListener("input",e=>{fxAmt=e.target.value;fxCalc();});
+  $("#fxFrom").addEventListener("change",e=>{fxFrom=e.target.value;fxCalc();});
+  $("#fxTax").addEventListener("change",e=>{fxTax=e.target.checked;fxCalc();});
+  refreshLive();
+}
+
+/* ---------- TID ---------- */
+function timeView(){
+  return `<section class="card">
+    <div class="card-h"><h2>Klokka nå</h2><span id="clockTick" class="small muted">Oppdateres hvert halve minutt</span></div>
+    <div class="clocks" id="clocks"></div>
+    <p class="note" style="margin-top:10px">Jawakara bruker <b>øytid (GMT+6)</b>, én time foran resten av Maldivene. Flytider og sjøfly fra Malé går etter Malé-tid (GMT+5).</p>
+  </section>
+  <section class="card"><div class="card-h"><h3>Regn om et klokkeslett</h3></div>
+    <div class="fgrid"><label class="f">Klokkeslett<input type="time" id="tcT" value="09:00"></label>
+    <label class="f">I<select id="tcZ"><option value="no">Norge</option><option value="mv">Malé</option><option value="is" selected>Jawakara øytid</option></select></label></div>
+    <div class="fx-out" id="tcOut"></div>
+  </section>
+  <section class="card"><div class="card-h"><h3>Tips mot jetlag</h3></div>
+    <ul style="margin:0;padding-left:18px" class="stack"><li>Prøv å sove på nattflyet, og legg dere til vanlig tid øytid første kveld.</li><li>Få dagslys tidlig på dagen de første dagene.</li><li>Hjemme igjen er dere 5 timer «for sent». Gå ut i lyset om morgenen.</li></ul></section>`;
+}
+function updClocks(){
+  const n = now(), el=$("#clocks"); if(!el) return;
+  const z = [["Norge",osloOffset(n)],["Malé",TRIP.mvOffset],["Jawakara øytid",TRIP.islandOffset]];
+  el.innerHTML = z.map(([l,o])=>`<div class="clock"><span>${l}</span><b>${fmtInOffset(n,o)}</b><span>${WD[new Date(n+o*3600e3).getUTCDay()]} · GMT+${o}</span></div>`).join("");
+}
+function bindTime(){
+  updClocks();
+  const calc=()=>{ const [h,m]=($("#tcT").value||"0:0").split(":").map(Number); const z=$("#tcZ").value; const offs={no:1,mv:TRIP.mvOffset,is:TRIP.islandOffset};
+    const base = Date.UTC(2027,1,22,h,m) - offs[z]*3600e3;
+    $("#tcOut").innerHTML = [["Norge",1],["Malé",TRIP.mvOffset],["Jawakara øytid",TRIP.islandOffset]].map(([l,o])=>{ const d=new Date(base+o*3600e3); const dd = d.getUTCDate()-22; return `<div class="fx-line"><span>${l}</span><b>${fmtInOffset(base,o)}${dd?` <small class="muted">(${dd>0?"neste dag":"dagen før"})</small>`:""}</b></div>`; }).join(""); };
+  $("#tcT").addEventListener("input",calc); $("#tcZ").addEventListener("change",calc); calc();
+}
+
+/* ---------- VÆR OG HAV ---------- */
+const WMO = {0:["☀️","Klart"],1:["🌤️","Stort sett klart"],2:["⛅","Delvis skyet"],3:["☁️","Overskyet"],45:["🌫️","Tåke"],48:["🌫️","Tåke"],51:["🌦️","Lett yr"],53:["🌦️","Yr"],55:["🌧️","Kraftig yr"],61:["🌦️","Lett regn"],63:["🌧️","Regn"],65:["🌧️","Kraftig regn"],80:["🌦️","Regnbyger"],81:["🌧️","Kraftige byger"],82:["⛈️","Voldsomme byger"],95:["⛈️","Torden"],96:["⛈️","Torden og hagl"],99:["⛈️","Torden og hagl"]};
+const wmo = c => WMO[c] || WMO[[0,1,2,3,45,51,61,80,95].reduce((a,k)=>c>=k?k:a,0)] || ["🌡️",""];
+function wxMiniHTML(){
+  const w = S.wx, m = S.marine;
+  if(!w || !w.current) return `<div class="row"><span style="font-size:40px">☀️</span><div><b>Normalt i februar: 30 °C, sjø 28 °C</b><div class="small muted">Live-vær vises når appen har nett.</div></div></div>`;
+  const [ic,tx] = wmo(w.current.weather_code);
+  const tides = m ? tideExtremes(m).filter(t=>t.t>now()).slice(0,2) : [];
+  return `<div class="wx-now"><span class="ic">${ic}</span><div><div class="tp">${Math.round(w.current.temperature_2m)}°</div><div class="small">${tx} · vind ${Math.round(w.current.wind_speed_10m)} m/s</div></div>
+    <div class="spacer"></div><div class="small" style="text-align:right">${m&&m.current?`<div>Sjø <b class="num">${nf(m.current.sea_surface_temperature,1)} °C</b></div><div>Bølger <b class="num">${nf(m.current.wave_height,1)} m</b></div>`:""}${tides.map(t=>`<div>${t.hi?"Flo":"Fjære"} <b class="num">${fmtInOffset(t.t,TRIP.islandOffset)}</b></div>`).join("")}</div></div>
+    <p class="note" style="margin-top:8px">Oppdatert ${new Date(w.ts).toLocaleString("nb-NO",{hour:"2-digit",minute:"2-digit",day:"numeric",month:"short"})}. Tider i øytid.</p>`;
+}
+
+function wxKind(c){ if(c==null) return "clear"; if(c>=95) return "storm"; if(c>=51) return "rain"; if(c>=45) return "fog"; if(c===3) return "cloudy"; if(c>=1) return "partly"; return "clear"; }
+function sceneSVG(kind, day){
+  const sky = !day ? ["#0b2140","#2b4f7a"] : kind==="clear"?["#2aa9e0","#bff0ff"] : kind==="partly"?["#4bb3dc","#d2f1fb"] : kind==="cloudy"||kind==="fog"?["#7d9fb0","#d3e2e8"] : ["#557789","#a9c2cc"];
+  const seaTop = day ? "#3fd6cf" : "#1c5f73", seaBot = day ? "#0a6c86" : "#06303f";
+  const cloud = (x,y,s,o,cls)=>`<g class="${cls}" opacity="${o}"><g transform="translate(${x} ${y}) scale(${s})" fill="${day?"#fff":"#9fb3c8"}"><ellipse cx="0" cy="0" rx="46" ry="22"/><circle cx="-22" cy="-8" r="20"/><circle cx="8" cy="-18" r="26"/><circle cx="34" cy="-4" r="18"/></g></g>`;
+  const showSun = day && (kind==="clear"||kind==="partly");
+  let clouds = "";
+  if(kind==="partly") clouds = cloud(170,70,1,.95,"drift")+cloud(380,110,.7,.85,"drift2");
+  if(kind==="cloudy"||kind==="fog") clouds = cloud(140,70,1.2,.95,"drift")+cloud(360,60,1.4,.95,"drift2")+cloud(540,95,1,.9,"drift");
+  if(kind==="rain"||kind==="storm") clouds = cloud(160,60,1.3,.95,"drift")+cloud(380,55,1.5,.95,"drift2")+cloud(560,75,1.1,.95,"drift");
+  let drops = "";
+  if(kind==="rain"||kind==="storm"){ for(let i=0;i<26;i++){ const x=60+i*22+(i%3)*7, y=95+(i%4)*8; drops+=`<line class="drop" style="animation-delay:${(i*0.13%1.1).toFixed(2)}s" x1="${x}" y1="${y}" x2="${x-4}" y2="${y+12}" stroke="#e8f6ff" stroke-width="2.5" stroke-linecap="round"/>`; } }
+  const bolt = kind==="storm" ? `<path d="M400 90 l-18 40 h16 l-12 34 32-46 h-17 l12-28z" fill="#ffd34d"/>` : "";
+  let stars = ""; if(!day){ for(let i=0;i<30;i++){ const x=(i*97)%640, y=10+((i*53)%120); stars+=`<circle cx="${x}" cy="${y}" r="${i%5?1.1:1.8}" fill="#fff" opacity="${.5+(i%3)*.2}"/>`; } }
+  const rays = Array.from({length:12},(_,i)=>{const a=i*30*Math.PI/180; return `<line x1="${(Math.cos(a)*54).toFixed(1)}" y1="${(Math.sin(a)*54).toFixed(1)}" x2="${(Math.cos(a)*74).toFixed(1)}" y2="${(Math.sin(a)*74).toFixed(1)}"/>`;}).join("");
+  return `<svg viewBox="0 0 640 270" role="img" aria-label="Værillustrasjon">
+  <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky[0]}"/><stop offset="1" stop-color="${sky[1]}"/></linearGradient>
+  <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${seaTop}"/><stop offset="1" stop-color="${seaBot}"/></linearGradient>
+  <radialGradient id="sun"><stop offset="0" stop-color="#fff6c2"/><stop offset=".6" stop-color="#ffd34d"/><stop offset="1" stop-color="#ffb938"/></radialGradient></defs>
+  <rect width="640" height="270" fill="url(#sky)"/>${stars}
+  ${showSun?`<g transform="translate(520 78)"><g class="spin" stroke="#ffd34d" stroke-width="5" stroke-linecap="round" opacity=".85">${rays}</g><circle r="42" fill="url(#sun)"/></g>`:""}
+  ${!day?`<g transform="translate(520 70)"><circle r="30" fill="#f4f1d8"/><circle cx="12" cy="-8" r="27" fill="${sky[0]}"/></g>`:""}
+  ${kind==="fog"?`<rect y="120" width="640" height="60" fill="#fff" opacity=".35"/>`:""}
+  ${clouds}${bolt}${drops}
+  <rect y="178" width="640" height="92" fill="url(#sea)"/>
+  <path class="wave1" d="M-40 190 q30 -8 60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="3"/>
+  <path class="wave2" d="M-40 215 q30 -7 60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="3"/>
+  <path class="wave1" d="M-40 242 q30 -6 60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0" fill="none" stroke="#fff" stroke-opacity=".25" stroke-width="3"/>
+  <ellipse cx="610" cy="186" rx="120" ry="16" fill="${day?"#f6e7c4":"#8c8270"}"/>
+  <g transform="translate(590 60)"><g class="sway"><path d="M14 124 C10 90 14 50 26 18 l6 2 C22 52 18 92 22 124z" fill="${day?"#7a5a3a":"#3d2e20"}"/>
+   <g fill="${day?"#21805a":"#174a37"}"><path d="M28 18c-18-20-46-24-70-10 22-2 44 4 60 18z"/><path d="M28 18c-4-24-24-40-48-44 18 10 30 26 38 48z"/><path d="M28 18c10-24 34-36 58-32-22 6-40 20-50 38z"/><path d="M28 18c22-8 44-2 52 14-18-8-36-6-50 2z"/><path d="M28 18c-22-4-42 8-52 26 16-12 34-18 50-14z"/></g>
+   <circle cx="26" cy="22" r="5" fill="#8a5a2b"/><circle cx="33" cy="24" r="4" fill="#8a5a2b"/></g></g>
+  </svg>`;
+}
+function wxSceneCard(){
+  const w=S.wx, m=S.marine; const live = w && w.current;
+  const code = live ? w.current.weather_code : 0;
+  let day = true;
+  if(live && w.current.is_day!=null) day = !!w.current.is_day;
+  else { const h=new Date(now()+TRIP.islandOffset*3600e3).getUTCHours(); day = h>=7 && h<19; }
+  const kind = wxKind(code); const [,tx] = wmo(code);
+  const d0 = live && w.daily ? 0 : -1;
+  const uv = d0===0 ? Math.round(w.daily.uv_index_max[0]) : "11+";
+  const hi = d0===0 ? Math.round(w.daily.temperature_2m_max[0]) : 30, lo = d0===0 ? Math.round(w.daily.temperature_2m_min[0]) : 26;
+  const ss = d0===0 ? fmtInOffset(w.daily.sunset[0]*1000,TRIP.islandOffset) : "ca. 19.15";
+  const sea = m && m.current && m.current.sea_surface_temperature!=null ? nf(m.current.sea_surface_temperature,1)+"°" : "28°";
+  const tides = m ? tideExtremes(m).filter(t=>t.t>now()).slice(0,1) : [];
+  return `<div class="scene">${sceneSVG(kind,day)}<div class="ov"><div class="tp">${live?Math.round(w.current.temperature_2m):30}°</div><div class="tx">${live?tx:"Typisk februarvær"}</div><div class="small">${live?`Maks ${hi}° · min ${lo}°`:"Live-vær vises når appen har nett"}</div></div></div>
+   <div class="wx-facts"><div><b>${sea}</b><span>i sjøen</span></div><div><b>${uv}</b><span>UV-indeks</span></div><div><b>${live?Math.round(w.current.wind_speed_10m)+" m/s":"lett"}</b><span>vind</span></div><div><b>${tides.length?(tides[0].hi?"Flo ":"Fjære ")+fmtInOffset(tides[0].t,TRIP.islandOffset):ss}</b><span>${tides.length?"neste tidevann":"solnedgang"}</span></div></div>
+   ${live?`<p class="note" style="margin-top:8px">Dagens vær på Jawakara akkurat nå, ${fmtInOffset(now(),TRIP.islandOffset)} øytid. Oppdatert ${new Date(w.ts).toLocaleTimeString("nb-NO",{hour:"2-digit",minute:"2-digit"})} norsk tid.</p>`:""}`;
+}
+function tideExtremes(m){
+  const t=m.hourly.time, h=m.hourly.sea_level_height_msl, out=[];
+  for(let i=1;i<h.length-1;i++){ if(h[i]==null) continue; if(h[i]>h[i-1]&&h[i]>=h[i+1]) out.push({t:t[i]*1000,v:h[i],hi:true}); if(h[i]<h[i-1]&&h[i]<=h[i+1]) out.push({t:t[i]*1000,v:h[i],hi:false}); }
+  return out;
+}
+function tideChart(m){
+  const t=m.hourly.time.map(x=>x*1000), h=m.hourly.sea_level_height_msl;
+  const n=now(); const idx=t.map((x,i)=>i).filter(i=>t[i]>=n-3*3600e3 && t[i]<=n+48*3600e3 && h[i]!=null);
+  if(idx.length<4) return "";
+  const W=640,H=200,P={l:40,r:12,t:14,b:28};
+  const xs=idx.map(i=>t[i]), ys=idx.map(i=>h[i]);
+  const x0=xs[0],x1=xs[xs.length-1], ymin=Math.min(...ys)-0.05, ymax=Math.max(...ys)+0.05;
+  const X=v=>P.l+(v-x0)/(x1-x0)*(W-P.l-P.r), Y=v=>P.t+(ymax-v)/(ymax-ymin)*(H-P.t-P.b);
+  const pts=idx.map(i=>`${X(t[i]).toFixed(1)},${Y(h[i]).toFixed(1)}`).join(" ");
+  const area=`M${X(x0)},${H-P.b} L${pts.split(" ").join(" L")} L${X(x1)},${H-P.b} Z`;
+  const ticks=[]; for(let v=Math.ceil(ymin*10)/10; v<=ymax; v+=0.2) ticks.push(+v.toFixed(1));
+  const hours=[]; const first=Math.ceil((x0+TRIP.islandOffset*3600e3)/(6*3600e3))*(6*3600e3)-TRIP.islandOffset*3600e3; for(let v=first; v<=x1; v+=6*3600e3) hours.push(v);
+  const ex=tideExtremes(m).filter(e=>e.t>=x0&&e.t<=x1);
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Tidevann de neste 48 timene">
+    ${ticks.map(v=>`<line x1="${P.l}" x2="${W-P.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${P.l-6}" y="${Y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)">${nf(v,1)}</text>`).join("")}
+    ${hours.map(v=>`<text x="${X(v)}" y="${H-8}" text-anchor="middle" font-size="11" fill="var(--muted)">${fmtInOffset(v,TRIP.islandOffset)}</text>`).join("")}
+    <path d="${area}" fill="var(--lagoon)" opacity=".25"/>
+    <polyline points="${pts}" fill="none" stroke="var(--sea)" stroke-width="2.5" stroke-linejoin="round"/>
+    ${n>=x0&&n<=x1?`<line x1="${X(n)}" x2="${X(n)}" y1="${P.t}" y2="${H-P.b}" stroke="var(--coral)" stroke-width="2" stroke-dasharray="4 3"/><text x="${X(n)+4}" y="${P.t+10}" font-size="11" fill="var(--coral)" font-weight="700">nå</text>`:""}
+    ${ex.map(e=>`<circle cx="${X(e.t)}" cy="${Y(e.v)}" r="4" fill="${e.hi?"var(--sea)":"var(--coral)"}"/>`).join("")}
+  </svg>`;
+}
+function wxView(){
+  const w=S.wx, m=S.marine;
+  const daily = w&&w.daily ? w.daily.time.map((t,i)=>({t:t*1000,c:w.daily.weather_code[i],hi:w.daily.temperature_2m_max[i],lo:w.daily.temperature_2m_min[i],uv:w.daily.uv_index_max[i],rain:w.daily.precipitation_sum[i],sr:w.daily.sunrise[i]*1000,ss:w.daily.sunset[i]*1000})) : [];
+  const ex = m ? tideExtremes(m).filter(e=>e.t>now()-3600e3).slice(0,6) : [];
+  return `<section class="card">
+    <div class="card-h"><h2>Været på Jawakara</h2><button class="btn ghost sm" type="button" id="wxRefresh">Oppdater</button></div>
+    ${wxSceneCard()}
+    ${daily.length?`<div class="wx-days" style="margin-top:12px">${daily.map(d=>`<div class="wx-d"><b>${WD[new Date(d.t+TRIP.islandOffset*3600e3).getUTCDay()]}</b><div class="i">${wmo(d.c)[0]}</div><div class="num">${Math.round(d.hi)}° / ${Math.round(d.lo)}°</div><div class="num muted">UV ${Math.round(d.uv)}</div></div>`).join("")}</div>
+    <p class="note" style="margin-top:8px">Sol opp ${fmtInOffset(daily[0].sr,TRIP.islandOffset)} og ned ${fmtInOffset(daily[0].ss,TRIP.islandOffset)} øytid i dag.</p>`:""}
+  </section>
+  <section class="card">
+    <div class="card-h"><h2>Tidevann og hav</h2><span class="small muted">Havnivå i meter, øytid</span></div>
+    ${m? `<div class="chartbox">${tideChart(m)}</div>
+      <div class="tides">${ex.map(e=>`<span class="pill ${e.hi?"good":"coral"}">${e.hi?"Flo":"Fjære"} ${fmtInOffset(e.t,TRIP.islandOffset,true)} · ${nf(e.v,2)} m</span>`).join("")}</div>
+      <p class="note" style="margin-top:8px">Modellert havnivå fra Open-Meteo. Beste snorkling over revkanten er rundt flo. Spør dykkesenteret om strømmen før lengre turer.</p>`
+    : `<div class="empty">Tidevann og bølger hentes når appen har nett.</div>`}
+  </section>
+  <section class="card"><div class="card-h"><h3>Normalt i februar</h3></div>
+    <div class="stat"><div><b>30 °C</b><span>dag</span></div><div><b>26 °C</b><span>natt</span></div><div><b>28 °C</b><span>i sjøen</span></div><div><b>UV 11+</b><span>ekstrem sol</span></div></div></section>`;
+}
+
+let liveBusy=false;
+async function getJSON(url){ const r = await fetch(url,{cache:"no-store"}); if(!r.ok) throw new Error(r.status); return r.json(); }
+async function refreshLive(force){
+  if(liveBusy) return; const n=now();
+  const stale = k => force || !S[k] || !S[k].ts || n - S[k].ts > (k==="fx"?6*3600e3:30*60e3);
+  if(!stale("wx") && !stale("marine") && !stale("fx")) return;
+  liveBusy=true; let changed=false;
+  const {lat,lon}=TRIP;
+  const jobs=[];
+  if(stale("wx")) jobs.push(getJSON(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,wind_speed_10m,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max,precipitation_sum,sunrise,sunset&timezone=GMT&timeformat=unixtime&forecast_days=7&wind_speed_unit=ms`).then(j=>{S.wx={current:j.current,daily:j.daily,ts:n};changed=true;}).catch(()=>{}));
+  if(stale("marine")) jobs.push(getJSON(`https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&current=wave_height,sea_surface_temperature&hourly=sea_level_height_msl&timezone=GMT&timeformat=unixtime&past_days=1&forecast_days=3`).then(j=>{S.marine={current:j.current,hourly:j.hourly,ts:n};changed=true;}).catch(()=>{}));
+  if(stale("fx")) jobs.push(getJSON(`https://open.er-api.com/v6/latest/USD`).then(j=>{ if(j&&j.rates&&j.rates.NOK){S.fx={NOK:j.rates.NOK,MVR:j.rates.MVR,EUR:j.rates.EUR,USD:1,ts:n};changed=true;} }).catch(()=>{}));
+  await Promise.all(jobs); liveBusy=false;
+  if(changed){ save(); const tab=location.hash.slice(1)||"hjem"; if(tab==="hjem"||(tab==="mer"&&["vaer","valuta"].includes(sub.mer))) render(tab); }
+  else if(force) toast("Fikk ikke kontakt. Viser siste lagrede data.");
+}
+
+/* ---------- PRAKTISK ---------- */
+function practicalView(){
+  return `<section class="card"><div class="card-h"><h2>Viktige numre</h2><span class="small muted">Trykk for å kopiere</span></div>
+    <div class="list">${EMERGENCY.map(([k,v])=>`<div class="li"><span class="t">${esc(k)}</span><button type="button" class="btn ghost sm num" data-copy="${esc(v)}">${esc(v)}</button></div>`).join("")}</div>
+    <p class="note" style="margin-top:8px">E-post til resorten: reservations@jawakara.com</p></section>
+  <section class="card"><div class="card-h"><h2>Sjøflyet</h2></div>
+    <dl class="kv"><dt>Selskap</dt><dd>Trans Maldivian Airways (TMA)</dd><dt>Tid</dt><dd>35–40 min, 130 km</dd><dt>Pris</dt><dd class="num">USD 430 per person tur–retur (alle er 12+)</dd><dt>Bagasje</dt><dd>20 kg innsjekket + 5 kg håndbagasje per person. Maks 32 kg per kolli. Overvekt ca. USD 5 per kg.</dd><dt>Ankomst</dt><dd>Fly må lande i Malé kl. 06.00–15.45</dd><dt>Avreise</dt><dd>Hjemflyet må gå kl. 09.00 eller senere</dd><dt>Billett</dt><dd>Utstedes på flyplassen av resortens representant</dd><dt>Skranke</dt><dd>Crown & Champa, B9 i terminal 2. TMA i terminal 1 ved gate 4.</dd></dl>
+    <p class="note" style="margin-top:8px">Sjøflyet flyr bare i dagslys og kan bli forsinket av vær. Må det bookes om etter forsinket fly, koster det USD 215 per person. Sørg for reiseforsikring.</p></section>
+  <section class="card"><div class="card-h"><h2>Innreise</h2></div>
+    <ul style="margin:0;padding-left:18px" class="stack"><li>Pass gyldig i minst 6 måneder etter ankomst.</li><li>IMUGA reiseerklæring for alle, innen 96 timer før reisen.</li><li>Gratis turistvisum ved ankomst med bekreftet hotell.</li><li>Ikke ta med alkohol, svinekjøtt eller religiøse gjenstander i bagasjen inn i landet.</li><li>Drone krever tillatelse. Spør resorten først.</li></ul></section>`;
+}
+function bindPractical(){
+  document.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",()=>{ const v=b.dataset.copy; try{ navigator.clipboard.writeText(v).then(()=>toast("Kopiert: "+v),()=>toast(v)); }catch(e){ toast(v); } }));
+}
+
+/* ---------- PROFILER OG DELING ---------- */
+function profilesView(){
+  return `<section class="card"><div class="card-h"><h2>Hvem bruker denne telefonen?</h2></div>
+    <div class="chips">${S.profiles.map(p=>`<button type="button" class="chip" data-setme="${p.id}" aria-pressed="${p.id===S.me}">${esc(p.emoji)} ${esc(p.name)}</button>`).join("")}</div></section>
+  <section class="card"><div class="card-h"><h2>Navn og figur</h2></div>
+    <div class="stack">${S.profiles.map(p=>`<div class="row"><select aria-label="Figur for ${esc(p.name)}" id="em-${p.id}" data-em="${p.id}" style="width:72px;font-size:22px;padding:4px">${EMOJIS.map(e=>`<option ${e===p.emoji?"selected":""}>${e}</option>`).join("")}</select><input type="text" id="nm-${p.id}" data-nm="${p.id}" value="${esc(p.name)}" style="flex:1;min-width:0" aria-label="Navn"></div>`).join("")}</div></section>
+  <section class="card"><div class="card-h"><h2>Del med familien</h2></div>
+    <p>Appen lagrer alt på telefonen, også uten nett. For å samle poeng, pakkelister og plan fra alle fire: trykk <b>Del min status</b> og send koden til de andre på Messenger eller SMS. Den som får koden, limer den inn under. Alt slås sammen, ingenting blir slettet.</p>
+    <div class="row" style="margin-top:12px"><button type="button" class="btn" id="shareBtn">Del min status</button></div>
+    <label class="f" style="margin-top:12px">Lim inn kode fra et familiemedlem<textarea id="importTxt" placeholder="JAWA1:…"></textarea></label>
+    <div class="row" style="margin-top:8px"><button type="button" class="btn ghost" id="importBtn">Slå sammen</button></div></section>`;
+}
+function exportCode(){
+  const data = {profiles:S.profiles,done:S.done,quiz:S.quiz,pack:S.pack,shop:S.shop,plan:S.plan,flights:S.flights};
+  return "JAWA1:"+btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+}
+function mergeList(a,b){ const m=new Map(); [...(a||[]),...(b||[])].forEach(x=>{ const c=m.get(x.id); if(!c || (x.ts||0)>(c.ts||0)) m.set(x.id,x); }); return [...m.values()]; }
+function mergeMap(a,b){ const out={...(a||{})}; Object.entries(b||{}).forEach(([k,v])=>{ if(!out[k] || (v.ts||0)>(out[k].ts||0)) out[k]=v; }); return out; }
+function importCode(txt){
+  txt = txt.trim(); const i = txt.indexOf("JAWA1:"); if(i<0) throw new Error("format");
+  const d = JSON.parse(decodeURIComponent(escape(atob(txt.slice(i+6).replace(/\s/g,"")))));
+  S.profiles = mergeList(S.profiles,d.profiles).sort((a,b)=>a.id.localeCompare(b.id));
+  const ids = new Set([...Object.keys(S.done),...Object.keys(d.done||{})]); ids.forEach(k=>S.done[k]=mergeMap(S.done[k],(d.done||{})[k]));
+  const qids = new Set([...Object.keys(S.quiz),...Object.keys(d.quiz||{})]); qids.forEach(k=>S.quiz[k]=mergeMap(S.quiz[k],(d.quiz||{})[k]));
+  const pids = new Set([...Object.keys(S.pack),...Object.keys(d.pack||{})]); pids.forEach(k=>S.pack[k]=mergeList(S.pack[k],(d.pack||{})[k]));
+  S.shop = mergeList(S.shop,d.shop); S.plan = mergeList(S.plan,d.plan); S.flights = mergeList(S.flights,d.flights);
+  save();
+}
+function bindProfiles(){
+  document.querySelectorAll("[data-setme]").forEach(b=>b.addEventListener("click",()=>{S.me=b.dataset.setme; chWho=null; packWho=null; quizState=null; save(); render("mer"); toast(`Hei, ${me().name.split(" ")[0]}!`);}));
+  document.querySelectorAll("[data-em]").forEach(s=>s.addEventListener("change",()=>{const p=prof(s.dataset.em); p.emoji=s.value; p.ts=now(); save(); renderHeader();}));
+  document.querySelectorAll("[data-nm]").forEach(s=>s.addEventListener("change",()=>{const p=prof(s.dataset.nm); p.name=s.value.trim()||p.name; p.ts=now(); save(); render("mer");}));
+  $("#shareBtn").addEventListener("click",async()=>{ const code=exportCode(); const text=`Jawakara-appen: status fra ${me().name}. Lim inn under Lister og mer → Profiler og deling.\n\n${code}`;
+    if(navigator.share){ try{ await navigator.share({text}); return; }catch(e){ if(e&&e.name==="AbortError") return; } }
+    try{ await navigator.clipboard.writeText(text); toast("Kopiert. Lim inn i en melding."); }catch(e){ $("#importTxt").value=code; $("#importTxt").select(); toast("Marker og kopier koden i feltet."); } });
+  $("#importBtn").addEventListener("click",()=>{ try{ importCode($("#importTxt").value); toast("Slått sammen!"); render("mer"); }catch(e){ toast("Fant ingen gyldig kode. Lim inn hele meldingen."); } });
+}
+
+/* ---------- SHEET ---------- */
+function sheet(html,bind){
+  closeSheet(); const bg=document.createElement("div"); bg.className="sheet-bg"; bg.id="sheetBg";
+  bg.innerHTML=`<div class="sheet" role="dialog" aria-modal="true">${html}</div>`; document.body.appendChild(bg);
+  bg.addEventListener("click",e=>{ if(e.target===bg||e.target.hasAttribute("data-close")) closeSheet(); });
+  bind&&bind(bg); const f=bg.querySelector("input,select,button"); f&&f.focus();
+}
+function closeSheet(){ const b=$("#sheetBg"); b&&b.remove(); }
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeSheet(); });
+function pickMe(first){
+  sheet(`<h2>${first?"Velkommen! Hvem er du?":"Bytt profil"}</h2><p class="muted">Poeng og pakkeliste følger profilen du velger. Du kan bytte når som helst.</p>
+    <div class="stack">${S.profiles.map(p=>`<button type="button" class="btn ghost" style="display:flex;align-items:center;gap:12px;text-align:left" data-pick="${p.id}"><span class="av">${esc(p.emoji)}</span>${esc(p.name)}</button>`).join("")}</div>`,
+  root=>root.querySelectorAll("[data-pick]").forEach(b=>b.addEventListener("click",()=>{ S.me=b.dataset.pick; chWho=null; packWho=null; quizState=null; save(); closeSheet(); render(); toast(`Hei, ${me().name.split(" ")[0]}!`); })));
+}
+$("#meBtn").addEventListener("click",()=>pickMe(false));
+
+/* ================= BOOT ================= */
+load();
+window.addEventListener("hashchange",route);
+route();
+if(!S.me) setTimeout(()=>pickMe(true),300);
+if("serviceWorker" in navigator && location.protocol==="https:" && !/claude|claudeusercontent/.test(location.host)){
+  navigator.serviceWorker.register("sw.js").catch(()=>{});
+}
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden) refreshLive(); });
+</script>
+
+</body>
+</html>
