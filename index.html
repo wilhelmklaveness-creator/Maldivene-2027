@@ -570,27 +570,27 @@ const RESORT = [
 /* Hva som er med i Premium All Inclusive (PAI), fra resortens faktaark og prosjektets analyse.
    inkl = med i PAI · delvis = noe er med · betales = ikke med · alle = gratis for alle gjester uansett pakke */
 const AI_INFO = {
-  "Aila":["inkl","Frokost, lunsj og middag. Halvpensjon har frokost og middag, fullpensjon alle tre."],
-  "Saima":["inkl","Frokost, lunsj og middag. Halvpensjon har frokost og middag, fullpensjon alle tre."],
-  "Vela":["inkl","Frokost, lunsj og middag. Halvpensjon har frokost og middag, fullpensjon alle tre."],
-  "Molo":["delvis","Én 3-retters lunsj og én middag à la carte per 5 netter, må forhåndsbestilles."],
-  "Umi 海":["delvis","Én 3-retters lunsj og én middag à la carte per 5 netter, må forhåndsbestilles."],
-  "Hideout":["betales","Ikke nevnt i pakken. Snacks (pizza, burger, is) får dere i barene."],
-  "Nika Bar, Bonthi Bar og Molo Bar":["delvis","Fri drikke kl. 08–01 i Nika og Bonthi. Molo Bar er ikke nevnt. Snacks kl. 10–12 og 15–19. Ikke alkohol under 18 år."],
+  "Aila":["uklart","Står ikke i all inclusive-dokumentet, som bare nevner Saima og Vela. Faktaarket nevner Aila. Spør resorten."],
+  "Saima":["inkl","Frokost, lunsj og middag for gjester på Mabin. Halvpensjon har frokost og middag, fullpensjon alle tre."],
+  "Vela":["inkl","Frokost, lunsj og middag for gjester på Dheru. Bor dere på Mabin, kan Vela forhåndsbestilles som «dine-around». Halvpensjon har frokost og middag, fullpensjon alle tre."],
+  "Molo":["delvis","Én 3-retters lunsj og én 3-retters middag à la carte per 5 netter. Må forhåndsbestilles, og alle i villaen må ha all inclusive."],
+  "Umi 海":["delvis","Én 3-retters lunsj og én 3-retters middag à la carte per 5 netter. Må forhåndsbestilles, og alle i villaen må ha all inclusive."],
+  "Hideout":["betales","Ikke nevnt i pakken. Burgere, småretter og is får dere i Bonthi, Thila og Nika Bar."],
+  "Nika Bar, Bonthi Bar og Molo Bar":["delvis","Fri drikke kl. 08–01 i Nika og Bonthi: cocktails, øl, husets vin, brennevin, brus, juice, smoothie og kaffe. Snacks kl. 10–12 og 15–19. Molo Bar er ikke nevnt. Ikke alkohol under 18 år."],
   "Fore Bar":["betales","Ikke blant barene med fri drikke."],
-  "Umi 海 Bar og Thila Bar":["delvis","Fri drikke kl. 08–01 i Thila Bar. Umi Bar er ikke nevnt."],
+  "Umi 海 Bar og Thila Bar":["delvis","Fri drikke kl. 08–01 og snacks i Thila Bar. Umi Bar er ikke nevnt."],
   "Grillfest på stranden":["betales","Gallamiddager og spesialmiddager er ikke med."],
   "Husrevet":["alle","Fritt for alle. Snorkelutstyr er med i PAI."],
   "Nybegynnerkurs i snorkling":["inkl","Én gruppetime på 30 min per person."],
-  "Båttur til husrevet":["inkl","To ganger daglig, må forhåndsbestilles."],
+  "Båttur til husrevet":["inkl","To ganger daglig, må forhåndsbestilles. Under 18 år må ha med en voksen."],
   "Snorkletur til andre rev":["betales","Ikke med."],
-  "Discover Scuba Diving":["betales","PAI gir ett introdykk bare ved 7 netter eller mer. Dere har 6."],
+  "Discover Scuba Diving":["betales","Ikke med. Introdykket i pakken gjelder bare sertifiserte dykkere ved 7 netter eller mer, og dere har 6."],
   "PADI Open Water og videre kurs":["betales","Ikke med."],
   "Fun dives":["betales","20 % rabatt på to dykk gjelder bare ved 7 netter eller mer."],
   "Bubblemaker":["betales","Ikke med."],
   "Kajakk og glasskajakk":["delvis","Vanlig kajakk 1 time daglig. Glasskajakk er ikke med."],
   "Stand up paddle (SUP)":["betales","Ikke nevnt i pakken."],
-  "Windsurfing":["inkl","Fri bruk, pluss én gruppetime på 30 min. Krever litt erfaring."],
+  "Windsurfing":["inkl","Utstyr 1 time daglig, pluss én gruppetime på 30 min. Krever litt erfaring."],
   "Katamaranseiling":["betales","Ikke med."],
   "Vannjet (jetski)":["betales","Ikke med."],
   "Vannski og wakeboard":["betales","Ikke med."],
@@ -605,15 +605,15 @@ const AI_INFO = {
   "Piknik på ubebodd øy":["betales","Kostnadsbelagte aktiviteter i klubben er ikke med."],
   "Sulha Spa":["delvis","30 min behandling for alle fra 15 år (mor, far og sønn). Resten betales."],
   "Akupunktur og urtemedisin":["betales","Ikke med."],
-  "Yoga og meditasjon":["inkl","Gruppeyoga er med."],
+  "Yoga og meditasjon":["delvis","Gruppeyoga (Asana og Yoga Nidra) er med. Meditasjon er ikke nevnt."],
   "Salong":["betales","Ikke med."],
-  "Golfbane og driving range":["inkl","Fri bruk, pluss én gruppetime på 30 min."],
-  "Tennis, padel og pickleball":["inkl","Fri bruk av banene."],
-  "Badminton og fotball":["inkl","Fotball er nevnt i pakken."],
+  "Golfbane og driving range":["inkl","Fri bruk med utstyr, pluss én gruppetime på 30 min på driving range."],
+  "Tennis, padel og pickleball":["delvis","Banene er gratis, men utstyr som racketer og baller er ikke med."],
+  "Badminton og fotball":["delvis","Fotballbanen er med, også utstyr. Badminton er ikke nevnt."],
   "Treningssenter":["inkl","Fri bruk."],
   "Infinitybasseng":["alle","Gratis for alle gjester."],
-  "Sykler":["inkl","Fri bruk."],
-  "Spillrom":["delvis","Bordtennis og biljard er nevnt i pakken."],
+  "Sykler":["inkl","Fri bruk hele oppholdet."],
+  "Spillrom":["delvis","Bordtennis og biljard er med, også utstyr. Resten er ikke nevnt."],
   "Jawa Teens":["delvis","Klubben er gratis 4–17 år. Turer og aktiviteter med egen pris betales."],
   "Jawa Kids Club":["inkl","Gratis 4–17 år. Aktiviteter med egen pris betales."],
   "Familiebilder med PIX Maldives":["betales","Ikke med."],
@@ -622,14 +622,14 @@ const AI_INFO = {
   "DJ og disko":["alle","Underholdning for alle gjester."],
   "Butikk":["betales","Ikke med."]
 };
-const AI_LABEL = {inkl:["Med i all inclusive","good"],delvis:["Delvis med i all inclusive","warn"],betales:["Betales ekstra","coral"],alle:["Gratis for alle","good"]};
+const AI_LABEL = {uklart:["Uklart, spør resorten","warn"],inkl:["Med i all inclusive","good"],delvis:["Delvis med i all inclusive","warn"],betales:["Betales ekstra","coral"],alle:["Gratis for alle","good"]};
 RESORT.forEach(r=>{ const a=AI_INFO[r.n]; if(a){ r.ai=a[0]; r.aiNote=a[1]; } });
 const OFFERS = [
   {n:"2027 Winter Getaways – 30 % rabatt",d:"Opphold 6. januar–29. mars 2027. Må bookes direkte innen 30. november 2026. Kan ikke kombineres med andre rabatter.",tag:"Gjelder datoene deres"},
   {n:"Island Escapes – 40 % rabatt",d:"Opphold 1. november–26. desember 2026. Book innen 30. november 2026.",tag:"Ikke deres datoer"},
   {n:"Child Stays Free, sommer 2027",d:"Gratis opphold for ett barn 2–11 år, 15. mai–31. oktober 2027.",tag:"Ikke deres datoer"},
   {n:"Romantic Celebration",d:"For bryllupsreise og sølv- eller gullbryllup: musserende vin, pyntet seng og kake. Hele året.",tag:"Hele året"},
-  {n:"Premium All Inclusive",d:"Alle måltider, drikke i barene kl. 08–01, påfyll i minibar, én delfintur, snorkletur til husrevet to ganger daglig, kajakk og windsurf, tennis, padel og golf, kidsklubb 4–17 år og spa for alle fra 15 år.",tag:"Måltidspakke"}
+  {n:"Premium All Inclusive",d:"Alle måltider i hovedrestauranten, fri drikke i Bonthi, Thila og Nika Bar kl. 08–01, champagne ved ankomst, én pose klesvask, påfyll i minibar, én delfintur, snorkletur til husrevet to ganger daglig, kajakk og windsurf, tennis, padel og golf, kidsklubb 4–17 år og spa for alle fra 15 år.",tag:"Måltidspakke"}
 ];
 
 /* All inclusive-analysen fra prosjektet */
@@ -1109,7 +1109,7 @@ VIEWS.resort = () => {
     <div class="card-h"><h2>Alt resorten tilbyr</h2><span class="small muted">${RESORT.length} tilbud</span></div>
     <div class="chips" role="group" aria-label="Kategori">${cats.map(c=>`<button type="button" class="chip" data-rcat="${esc(c)}" aria-pressed="${c===resCat}">${esc(c)}</button>`).join("")}</div>
     <div class="chips" role="group" aria-label="All inclusive" style="margin-top:8px">${[["Alle","Alle"],["med","Med i all inclusive"],["betales","Betales ekstra"]].map(([k,l])=>`<button type="button" class="chip" data-rai="${k}" aria-pressed="${k===resAi}">${l}</button>`).join("")}</div>
-    <p class="small muted" style="margin-top:8px">Premium All Inclusive: ${cnt("inkl")} med, ${cnt("delvis")} delvis med, ${cnt("betales")} betales ekstra, ${cnt("alle")} gratis for alle uansett.</p>
+    <p class="small muted" style="margin-top:8px">Premium All Inclusive: ${cnt("inkl")} med, ${cnt("delvis")} delvis med, ${cnt("betales")} betales ekstra, ${cnt("alle")} gratis for alle uansett${cnt("uklart")?`, ${cnt("uklart")} uklar`:""}. Kilde: resortens all inclusive-dokument.</p>
     <div style="margin-top:6px">${list.map((r,i)=>`<div class="act"><div class="ah"><span class="an">${esc(r.n)}</span>${r.age?`<span class="pill">${esc(r.age)}</span>`:""}</div><p class="ad">${esc(r.d)}</p>${r.ai?`<p class="small"><span class="pill ${AI_LABEL[r.ai][1]}">${AI_LABEL[r.ai][0]}</span> ${esc(r.aiNote)}</p>`:""}<div class="row"><span class="pill">${esc(r.c)}</span><span class="spacer"></span><button type="button" class="btn ghost sm" data-addact="${esc(r.n)}">Legg i plan</button></div></div>`).join("")}</div>
     <p class="note" style="margin-top:10px">Hentet fra jawakara.com 23. november 2026. Priser og tider finnes i resortens bookingportal og app, og bør sjekkes der.</p>
   </section>
