@@ -243,8 +243,8 @@ details.lc[open] summary{border-bottom:1px solid var(--line);margin-bottom:12px}
 .fx-line{display:flex;justify-content:space-between;gap:10px;padding:8px 12px;background:var(--chip);border-radius:12px;font-variant-numeric:tabular-nums}
 .fx-line b{font-family:var(--font-d);font-size:1.15rem}
 
-.count .big-days{display:flex;align-items:baseline;gap:10px;background:rgba(255,255,255,.18);padding:10px 16px}
-.count .big-days b{font-size:clamp(3rem,14vw,4.6rem)}
+.count .big-days{display:flex;align-items:baseline;gap:8px;background:rgba(255,255,255,.18);padding:6px 14px}
+.count .big-days b{font-size:clamp(2.2rem,9vw,3rem)}
 .count .big-days span{font-size:.9rem;letter-spacing:.1em}
 .count .hm{background:none;border:0;text-align:left;align-self:center;font-size:.9rem;opacity:.95;min-width:0}
 /* Weather scene */
@@ -282,6 +282,18 @@ details.lc[open] summary{border-bottom:1px solid var(--line);margin-bottom:12px}
 .daysep{align-self:center;font-size:.72rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;padding:6px 0}
 .chatbar{position:sticky;bottom:calc(64px + env(safe-area-inset-bottom,0px));display:flex;gap:8px;background:var(--card);padding-block:8px}
 .chatbar textarea{min-height:44px;max-height:140px;flex:1;min-width:0}
+/* News ticker */
+.ticker{position:relative;overflow:hidden;border-radius:12px;background:var(--sea);color:var(--card);padding:8px 0;margin-bottom:10px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.ticker-track{display:inline-flex;gap:36px;white-space:nowrap;padding-left:100%;animation:tick var(--tick-dur,60s) linear infinite;font-weight:800;font-size:.92rem}
+.ticker:hover .ticker-track,.ticker:focus-within .ticker-track{animation-play-state:paused}
+.ticker a{color:inherit;text-decoration:none}
+.ticker a::before{content:"●";color:var(--coral);margin-right:10px;font-size:.7rem;vertical-align:2px}
+@keyframes tick{to{transform:translateX(-100%)}}
+@media (prefers-reduced-motion:reduce){.ticker{display:none}}
+.news-item{display:grid;gap:2px;padding:8px 0;border-bottom:1px solid var(--line)}
+.news-item:last-child{border-bottom:0}
+.news-item a{font-weight:800;color:var(--ink);text-decoration:none}
+.news-item a:hover{text-decoration:underline}
 /* Tab bar */
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
 .tabbar nav{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr)}
@@ -758,7 +770,7 @@ function renderHeader(){
   if(n < dep){
     const diff = dep-n, d=Math.floor(diff/864e5), h=Math.floor(diff%864e5/36e5), mi=Math.floor(diff%36e5/6e4);
     $("#heroTitle").textContent = "Snart sjøfly og korallrev";
-    c.innerHTML = `<div class="big-days"><b>${d}</b><span>dager igjen</span></div><div class="hm"><span class="num">${h} t ${mi} min</span><br>${depLabel()}</div>`;
+    c.innerHTML = `<div class="big-days"><b>${d}</b><span>dager igjen</span></div><div class="hm"><span class="num">${h} t ${mi} min</span><br>til avreise</div>`;
   } else if(n < co){
     const day = Math.max(1,Math.floor((n-ci)/864e5)+1);
     $("#heroTitle").textContent = n<ci ? "Vi er på vei!" : n>Date.UTC(2027,1,27,8,20) ? "På vei hjem" : `Dag ${day} av 7 på Jawakara`;
@@ -777,6 +789,17 @@ VIEWS.hjem = () => {
   const rows = S.profiles.map(p=>({p,s:stats(p.id)})).sort((a,b)=>b.s.points-a.s.points);
   const max = Math.max(50,...rows.map(r=>r.s.points));
   return `
+  <section class="card" aria-labelledby="kvH">
+    <h2 id="kvH" style="margin-bottom:10px">Kjekt å vite</h2>
+    <div class="grid2" style="gap:12px">
+      <div><div class="eyebrow">Dagens dhivehi-ord</div>${wordOfDay()}</div>
+      <div><div class="eyebrow">Visste du?</div><p style="margin-top:6px">${factOfDay()}</p></div>
+    </div>
+  </section>
+  <section class="card" aria-labelledby="nwH">
+    <div class="card-h"><h2 id="nwH">Nyheter fra Maldivene</h2><span class="small muted" id="newsTs"></span></div>
+    <div id="news">${newsHTML()}</div>
+  </section>
   <section class="card" aria-labelledby="wxH">
     <div class="card-h"><h2 id="wxH">Dagens vær på Maldivene</h2><a href="#mer" data-sub="vaer" class="small js-sub">7 dager og tidevann</a></div>
     ${wxSceneCard()}
@@ -793,13 +816,9 @@ VIEWS.hjem = () => {
   <section class="card" aria-labelledby="dlH">
     <div class="card-h"><h2 id="dlH">Huskeliste før avreise</h2></div>
     ${deadlinesHTML()}
-  </section>
-  <section class="grid2">
-    <div class="card"><div class="eyebrow">Dagens dhivehi-ord</div>${wordOfDay()}</div>
-    <div class="card"><div class="eyebrow">Visste du?</div><p style="margin-top:6px">${factOfDay()}</p></div>
   </section>`;
 };
-AFTER.hjem = () => { bindSubLinks(); refreshLive(); };
+AFTER.hjem = () => { bindSubLinks(); refreshLive(); refreshNews(); };
 function bindSubLinks(){ document.querySelectorAll(".js-sub").forEach(a=>a.addEventListener("click",()=>{ sub.mer=a.dataset.sub; try{localStorage.setItem(LS_KEY+"-sub",JSON.stringify(sub));}catch(e){} })); }
 
 const FACTS = ["Papegøyefisken lager mye av den hvite sanden på strendene.","Maldivene er verdens laveste land, i snitt 1,5 meter over havet.","Ordet «atoll» kommer fra dhivehi.","I 2009 holdt regjeringen et møte under vann for å vise faren ved havstigning.","Jawakara har en egen golfbane, sjelden på Maldivene.","Trans Maldivian Airways har en av verdens største flåter av sjøfly.","Klovnefisker er født som hanner og kan bli hunner senere.","Skilpadder kan holde pusten i flere timer når de sover.","Spinnerdelfiner kan snurre sju ganger rundt i ett hopp.","Det er ikke lov å ha hund som kjæledyr på Maldivene."];
@@ -813,11 +832,11 @@ function deadlines(){
   const imuga = "2027-02-15";
   out.push({d:"2026-11-30",t:"Siste dag for Winter Getaways (30 %)",x:"Gjelder bare direktebooking hos resorten. Dere har booket via Booking.com."});
   out.push({d:"2027-02-01",t:"Betal sjøflyet",x:"Resorten sender faktura. Alle fire er over 12 år: 4 × 430 = 1 720 dollar tur–retur."});
-  out.push({d:"2027-02-14",t:"Send flyinfo og alle navn til resorten",x:"Senest 7 dager før ankomst, til reservations@jawakara.com: LX 8066 lander Malé 20. feb kl. 11.35, LX 8067 går fra Malé 27. feb kl. 13.20. Uten dette bestilles ikke sjøflyet."});
-  out.push({d:"2027-01-15",t:"Avklar natten 20.–21. februar",x:"Dere lander i Malé lørdag 20. feb kl. 11.35, men innsjekk på Jawakara er søndag 21. feb. Natten er ikke booket ennå."});
-  out.push({d:"2027-01-15",t:"Avklar natten på Arlanda 27.–28. februar",x:"Dere lander 23.35 og flyr videre 09.00. Vurder flyplasshotell."});
+  out.push({d:"2027-02-14",t:"Send flyinfo og alle navn til resorten",x:"Senest 7 dager før ankomst, til reservations@jawakara.com, med flytidene fra Plan. Uten dette bestilles ikke sjøflyet."});
+  out.push({d:"2027-01-15",t:"Avklar natten 20.–21. februar",x:"Innsjekk på Jawakara er søndag 21. feb, men dere er i Malé allerede lørdag. Natten er ikke booket ennå. Se Plan."});
+  out.push({d:"2027-01-15",t:"Avklar natten på Arlanda 27.–28. februar",x:"Lang ventetid over natten på hjemveien. Vurder flyplasshotell. Se Plan."});
   out.push({d:"2027-02-18",t:"Pakk maks 20 kg per koffert",x:"Flyene tillater 23 kg, men sjøflyet bare 20 kg innsjekket og 5 kg håndbagasje per person."});
-  out.push({d:imuga,t:"Fyll ut IMUGA reiseerklæring",x:"For alle fire, tidligst 96 timer før avreise (fra 15. feb kl. 15.25), på imuga.immigration.gov.mv."});
+  out.push({d:imuga,t:"Fyll ut IMUGA reiseerklæring",x:"For alle fire, tidligst 96 timer før avreise, på imuga.immigration.gov.mv."});
   out.push({d:"2027-02-19",t:"Sjekk at passene er gyldige",x:"Minst 6 måneder etter ankomst, dvs. til 21. august 2027 eller senere."});
   out.push({d:"2027-02-19",t:"Ta ut riktige dollarsedler",x:"Gamle 100-dollarsedler (hvite) og britiske papirsedler på 20 og 50 pund tas ikke imot."});
   return out.sort((a,b)=>a.d.localeCompare(b.d));
@@ -826,6 +845,46 @@ function deadlinesHTML(){
   const today = diso(new Date());
   return deadlines().map(x=>{ const d=dparse(x.d); const past = x.d<today;
     return `<div class="deadline" ${past?'style="opacity:.55"':""}><div class="dl-date"><b>${d.getUTCDate()}</b><span>${MON[d.getUTCMonth()]}</span></div><div><div style="font-weight:800">${esc(x.t)}</div><div class="small muted">${esc(x.x)}</div></div></div>`; }).join("");
+}
+
+
+/* ---------- NYHETER ---------- */
+const NEWS_FEED = "https://news.google.com/rss/search?q=Maldives%20when%3A3d&hl=en-GB&gl=GB&ceid=GB:en";
+const NEWS_SITES = [["The Edition","https://edition.mv"],["Sun Online","https://en.sun.mv"],["PSM News","https://psmnews.mv/en"],["Google Nyheter","https://news.google.com/search?q=Maldives&hl=en-GB&gl=GB&ceid=GB:en"]];
+let newsBusy=false;
+function cleanNews(items){
+  const seen=new Set();
+  return items.map(i=>{ let t=String(i.t||"").trim(), src=String(i.src||"").trim(); const m=t.match(/^(.*)\s[-–]\s([^-–]+)$/); if(m&&!src){ t=m[1]; src=m[2]; } else if(m&&src&&m[2].trim()===src){ t=m[1]; }
+    return {t, src, link:/^https:\/\//.test(i.link||"")?i.link:"", d:Date.parse(i.d)||0}; })
+   .filter(i=>i.t && !seen.has(i.t) && seen.add(i.t)).sort((a,b)=>b.d-a.d).slice(0,8);
+}
+function parseRSS(xml){ const doc=new DOMParser().parseFromString(xml,"text/xml"); return [...doc.querySelectorAll("item")].map(it=>({t:it.querySelector("title")?.textContent, link:it.querySelector("link")?.textContent, d:it.querySelector("pubDate")?.textContent, src:it.querySelector("source")?.textContent})); }
+async function fetchNews(){
+  const enc=encodeURIComponent(NEWS_FEED);
+  const tries=[
+    async()=>{ const j=await getJSON(`https://api.rss2json.com/v1/api.json?rss_url=${enc}`); if(j.status!=="ok") throw 0; return j.items.map(i=>({t:i.title,link:i.link,d:i.pubDate,src:i.author||""})); },
+    async()=>{ const r=await fetch(`https://api.allorigins.win/raw?url=${enc}`); if(!r.ok) throw 0; return parseRSS(await r.text()); },
+    async()=>{ const r=await fetch(`https://corsproxy.io/?url=${enc}`); if(!r.ok) throw 0; return parseRSS(await r.text()); }
+  ];
+  for(const t of tries){ try{ const items=cleanNews(await t()); if(items.length) return items; }catch(e){} }
+  return null;
+}
+async function refreshNews(force){
+  if(newsBusy) return; const fresh = S.news && S.news.ts && now()-S.news.ts < 4*3600e3;
+  if(fresh && !force) return;
+  newsBusy=true; const items=await fetchNews(); newsBusy=false;
+  if(items){ S.news={items,ts:now()}; save(); }
+  const el=$("#news"); if(el) el.innerHTML=newsHTML();
+}
+function fmtNewsDate(ms){ if(!ms) return ""; const h=Math.round((now()-ms)/36e5); return h<1?"nå nettopp":h<24?`${h} t siden`:new Date(ms).toLocaleDateString("nb-NO",{day:"numeric",month:"short"}); }
+function newsHTML(){
+  const items = S.news && S.news.items || [];
+  const ts=$("#newsTs"); if(ts) ts.textContent = S.news&&S.news.ts ? "Oppdatert "+new Date(S.news.ts).toLocaleTimeString("nb-NO",{hour:"2-digit",minute:"2-digit"}) : "";
+  if(!items.length) return `<div class="empty">Fikk ikke hentet nyheter akkurat nå. Les direkte hos:</div><div class="row" style="margin-top:8px">${NEWS_SITES.map(([n,u])=>`<a class="btn ghost sm" href="${u}" target="_blank" rel="noopener">${n}</a>`).join("")}</div>`;
+  const tick = items.map(i=>`<a href="${esc(i.link)}" target="_blank" rel="noopener">${esc(i.t)}</a>`).join("");
+  return `<div class="ticker" aria-hidden="true"><div class="ticker-track" style="--tick-dur:${Math.max(30,items.reduce((a,i)=>a+i.t.length,0)/7)}s">${tick}</div></div>
+    <div>${items.slice(0,3).map(i=>`<div class="news-item">${i.link?`<a href="${esc(i.link)}" target="_blank" rel="noopener">${esc(i.t)}</a>`:`<b>${esc(i.t)}</b>`}<span class="small muted">${esc(i.src)}${i.src&&i.d?" · ":""}${fmtNewsDate(i.d)}</span></div>`).join("")}</div>
+    <p class="note" style="margin-top:6px">Overskriftene er på engelsk og hentes fra Google Nyheter flere ganger om dagen.</p>`;
 }
 
 /* ---------- PLAN ---------- */
@@ -1571,7 +1630,7 @@ if(FIREBASE_CONFIG && FB.fam) fbInit();
 if("serviceWorker" in navigator && location.protocol==="https:" && !/claude|claudeusercontent/.test(location.host)){
   navigator.serviceWorker.register("sw.js").catch(()=>{});
 }
-document.addEventListener("visibilitychange",()=>{ if(!document.hidden) refreshLive(); });
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden){ refreshLive(); if(curTab()==="hjem") refreshNews(); } });
 </script>
 
 </body>
